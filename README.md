@@ -14,6 +14,12 @@ Adding a machine is one Markdown file. Adding a person or a sponsor is a few
 lines of YAML. Writing a blog post is one Markdown file. You do not need to
 touch HTML or CSS for any routine update.
 
+> **New to this?** Read **[EDITING.md](EDITING.md)** first. It walks through
+> changing the site step by step, from the GitHub website or from your own
+> computer, with no Hugo knowledge assumed.
+>
+> **Placeholders still waiting on a person** are listed in **[TODO.md](TODO.md)**.
+
 ---
 
 ## Contents
@@ -21,7 +27,7 @@ touch HTML or CSS for any routine update.
 1. [Setup and preview](#1-setup-and-preview)
 2. [Where everything lives](#2-where-everything-lives)
 3. [Add or edit a machine](#3-add-or-edit-a-machine)
-4. [Write a blog post](#4-write-a-blog-post)
+4. [Post to the blog](#4-post-to-the-blog)
 5. [People, advisors and sponsors](#5-people-advisors-and-sponsors)
 6. [Site settings: links, navigation, docs URL](#6-site-settings-links-navigation-docs-url)
 7. [Changing the design](#7-changing-the-design)
@@ -127,6 +133,7 @@ The tube furnace is the most fundamental machine in the fab…
 | `summary` | yes | One plain sentence, shown before the card is opened. |
 | `partOf` | no | For a subsystem: the **file name** (without `.md`) of the machine it belongs to, e.g. `partOf: "maskless-stepper"`. The card sits right after its parent. |
 | `docs` | no | Only if its docs page is not at the usual address (see below). |
+| `image` | no | A photo of the machine, e.g. `image: "/images/machines/spinner.jpg"`. Shown at the top of its card, cropped to 4:3 landscape. Leave it out and a line drawing for its process stands in. |
 | `draft` | no | `draft: true` hides the machine from the site entirely. |
 
 **Everything below the second `---`** is the text that appears when the card
@@ -147,7 +154,13 @@ copy an existing machine file and change it. Then:
    `src/machines/my-machine.md` (the **same file name**) and list it in
    `src/SUMMARY.md`. The card's "Full documentation" button links to
    `docsURL` + `machines/my-machine.html` automatically.
-2. **Give it a lead.** Add the person to `data/leads.yaml` with `role:` set to
+2. **Add a photo when it exists.** Save it in `static/images/machines/`
+   (lowercase, hyphens, no spaces, under ~400 KB, landscape), then add
+   `image: "/images/machines/my-machine.jpg"` to the front matter. Until
+   then the card shows a placeholder drawing from
+   `static/images/machines/placeholders/` chosen by `process` (ChemE
+   machines get the flask).
+3. **Give it a lead.** Add the person to `data/leads.yaml` with `role:` set to
    the machine's title. The card then shows "Lead: …", and the person's card
    on /team/ links to the machine.
 
@@ -169,36 +182,82 @@ with that card already open. Use these links in Discord or the blog.
 
 ---
 
-## 4. Write a blog post
+## 4. Post to the blog
 
-Create `content/blog/my-post-name.md` (the file name becomes the address,
-`/blog/my-post-name/`):
+A post is **one Markdown file in `content/blog/`**. The file name becomes the
+address: `content/blog/first-wafer.md` is published at `/blog/first-wafer/`.
+Use lowercase words joined by hyphens.
 
-```markdown
----
-title: "First wafer through the furnace"
-date: 2026-11-02
-kicker: "Build log"
-description: "One or two sentences. Shown in the post list and in link previews."
-author: "Arjun Rajavel Senthilvel"
----
+### Step by step
 
-Write the post here in Markdown. Use `## headings` for sections; they
-appear in the "On this page" list beside the post.
+1. **Make the file.** Copy `archetypes/blog.md` to
+   `content/blog/<your-post-name>.md`, or, if Hugo is installed, run:
 
-![What the picture shows](/images/blog/furnace-first-run.jpg)
-```
+   ```sh
+   hugo new blog/first-wafer.md
+   ```
 
-- `date` sets the order (newest first) and the date shown.
-- `kicker` (optional) is a short label: *Build log*, *Event*, *Site news*.
-- `author` (optional) prints a byline.
-- Put pictures in `static/images/blog/` and reference them as
-  `/images/blog/<file>`. The text in the square brackets becomes the
-  caption and the alt text.
-- `draft: true` keeps a post off the live site while you work on it
-  (`hugo server -D` shows drafts locally).
+2. **Fill in the top block** (the "front matter", between the two `---`
+   lines):
 
-The three newest posts also appear on the homepage.
+   ```markdown
+   ---
+   title: "First wafer through the furnace"
+   date: 2026-11-02
+   kicker: "Build log"
+   description: "One or two sentences. Shown in the post list and in link previews."
+   author: "Bear BlinSchauer"
+   draft: true
+   ---
+   ```
+
+   | Field | What it does |
+   |---|---|
+   | `title` | The headline. |
+   | `date` | `YYYY-MM-DD`. Sets the order (newest first) and the date shown. A date in the future hides the post until that day. |
+   | `kicker` | Optional short label above the title: *Build log*, *Event*, *Site news*. |
+   | `description` | One or two sentences for the post list, the homepage and link previews. |
+   | `author` | Optional byline. |
+   | `draft` | `true` keeps the post off the live site while you write. Delete the line (or set `false`) to publish. |
+
+3. **Write the post** below the second `---` in plain Markdown:
+
+   ```markdown
+   We ran the first oxidation today. Here is what happened.
+
+   ## The setup
+
+   Normal paragraphs, **bold**, *italics*, [links](https://example.com),
+   and lists:
+
+   - one
+   - two
+
+   ![The furnace at 1000 °C](/images/blog/furnace-first-run.jpg)
+   ```
+
+   - `## Headings` split the post into sections; they also fill the
+     "On this page" list beside it.
+   - **Pictures** go in `static/images/blog/` and are referenced as
+     `/images/blog/<file>`. The words in the square brackets become the
+     caption and the alt text, so describe the picture.
+   - **Link to a machine** with `[the furnace](../../machines/#tube-furnace)`.
+     That opens its card. (Relative links keep working wherever the site
+     is hosted.)
+
+4. **Preview it.** `hugo server -D` (the `-D` shows drafts) and open
+   <http://localhost:1313/nanofab_web/blog/>. If you are editing on github.com
+   instead, skip this; see [EDITING.md](EDITING.md).
+
+5. **Publish.** Remove `draft: true`, commit, and push to `main` (or click
+   **Commit changes** on github.com). The site rebuilds itself in about a
+   minute.
+
+The three newest posts also appear on the homepage. With no published
+posts, the homepage leaves the blog section out and /blog/ says so.
+
+`content/blog/a-new-website.md` is an example post, kept as a draft. Use it as
+a model, then delete it.
 
 ---
 
@@ -238,8 +297,8 @@ Name files in lowercase with hyphens and no spaces. Keep them under ~300 KB.
 
 Everything is in `hugo.toml`, with comments:
 
-- **`heroTitle`, `heroLead`**: the homepage headline and paragraph. The
-  last word of the headline is set in purple.
+- **`heroTitle`, `heroLead`**: the homepage headline and paragraph. A
+  full stop at the end of the headline is drawn in purple.
 - **`heroImage`**: the lab photograph behind the homepage hero (shown in
   greyscale, darkened).
 - **`discordURL`, `githubURL`, `linkedinURL`, `instagramURL`,
@@ -274,8 +333,8 @@ Commit the rebuilt `static/css/site.css` together with your change. Classes
 that only JavaScript adds must be listed in `safelist` in
 `tailwind.config.js`, or the build drops them.
 
-Fonts are Geist and Geist Mono, self-hosted in `static/fonts/` (SIL Open
-Font License, `static/fonts/Geist-OFL.txt`).
+Fonts are IBM Plex Sans and IBM Plex Mono, self-hosted in `static/fonts/`
+(SIL Open Font License, `static/fonts/IBM-Plex-OFL.txt`).
 
 ---
 
@@ -301,8 +360,9 @@ Minnesota. So:
 | Gopher Nanofab | Nanofabrication Club |
 
 This is why `title` in `hugo.toml` is `"Minnesota Nanofabrication Club"`,
-and the header shows "Minnesota Nanofabrication" with "University of
-Minnesota" as a separate tag beside it, never as part of the name.
+and the header shows "Minnesota Nanofabrication" with "Student club ·
+University of Minnesota" as a separate line under it, never as part of the
+name.
 
 **This exact sentence has to appear on your public platforms** — the
 website, Instagram, LinkedIn, all of it:

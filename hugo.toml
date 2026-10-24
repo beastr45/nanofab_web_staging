@@ -63,8 +63,9 @@ disableKinds = ["taxonomy", "term"]
   # The homepage hero photograph. Replace the file to change it.
   heroImage = "/images/lab/nf-lab-web.jpg"
 
-  # The one-line headline on the homepage hero.
-  heroTitle = "Build the fab."
+  # The one-line headline on the homepage hero. A full stop at the end
+  # is drawn in the accent colour.
+  heroTitle = "Bare wafer to working chip."
   heroLead = "We are engineering undergraduates at the University of Minnesota building a nanofabrication facility from scratch. Every machine is designed, assembled, tested and documented by students."
 
   googleSiteVerification = ""
@@ -74,7 +75,7 @@ disableKinds = ["taxonomy", "term"]
   githubURL = "https://github.com/minnesota-nanofabrication-club"
   linkedinURL = "https://www.linkedin.com/company/minnesota-nanofabrication-club/"
   instagramURL = "https://www.instagram.com/minnesota_nanofab_club/?hl=en"
-  contactEmail = "jin00404@umn.edu"
+  contactEmail = "nanoclub@umn.edu"
 
   # ---------------- The documentation site ----------------
   # The separate mdBook site (repository: nanofab_docs). The "Docs"

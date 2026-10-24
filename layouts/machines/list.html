@@ -23,7 +23,7 @@
 <nav class="subnav" aria-label="Bands">
   <div class="wrap subnav-inner">
     {{ range $i, $b := $bands }}
-    <a href="#{{ $b.slug }}" data-spy="{{ $b.slug }}"><span class="idx">/{{ printf "%02d" (add $i 1) }}</span>{{ $b.name }}</a>
+    <a href="#{{ $b.slug }}" data-spy="{{ $b.slug }}"><span class="idx">{{ printf "%02d" (add $i 1) }}</span>{{ $b.name }}</a>
     {{ end }}
     <div class="subnav-tools">
       <button class="btn btn-line btn-sm" type="button" data-expand-all aria-pressed="false">Open all</button>

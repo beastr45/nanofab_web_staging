@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+<!-- Placeholder clipart for a machine card. Replace it by setting image: in the machine's .md file. -->
+<rect width="400" height="300" fill="#ecebe8"/>
+<g fill="none" stroke="#6f7175" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<rect x="170" y="44" width="60" height="30" rx="3"/>
+<path d="M200 74v14"/><ellipse cx="200" cy="100" rx="52" ry="10"/>
+<path d="M152 104l40 70M248 104l-40 70" stroke-dasharray="4 5"/>
+<ellipse cx="200" cy="186" rx="88" ry="16"/><path d="M112 186v12c0 9 39 16 88 16s88-7 88-16v-12"/>
+<path d="M90 230h220M120 230v-16M280 230v-16"/>
+</g>
+<g stroke="#6d28d9" stroke-width="1.5"><path d="M368 22v16M360 30h16"/></g>
+<text x="24" y="280" font-family="ui-monospace, Menlo, monospace" font-size="11" letter-spacing="1.2" fill="#8a8c90">PHOTO COMING SOON</text>
+</svg>

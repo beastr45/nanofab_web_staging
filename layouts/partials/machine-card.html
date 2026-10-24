@@ -9,6 +9,11 @@
      Markdown body the member wrote, the facts, and a link to the
      machine's page on the docs site.
 
+     The picture at the top is `image:` from the machine's front matter.
+     Until a lead adds a photo, a line drawing for its process stands in
+     (static/images/machines/placeholders/). Any picture is cropped to
+     4:3, so every card lines up.
+
      Without JavaScript every card renders open (the body has no
      `hidden` attribute until site.js adds it), so nothing is lost.
      ============================================================== */}}
@@ -18,7 +23,13 @@
 {{ $key := $m.Title | lower | replaceRE "[^a-z0-9]+" " " | strings.TrimSpace }}
 {{ $leads := index .leads $key }}
 {{ $parent := "" }}{{ with $m.Params.partOf }}{{ $parent = index $.titles . }}{{ end }}
+{{ $kind := cond (eq $m.Params.band "cheme") "chemistry" ($m.Params.process | default "machine") }}
+{{ $img := $m.Params.image | default (printf "images/machines/placeholders/%s.svg" $kind) }}
+{{ $placeholder := not $m.Params.image }}
 <article class="mcard" id="{{ $slug }}" data-card>
+  <figure class="mcard-media{{ if $placeholder }} is-placeholder{{ end }}">
+    <img src="{{ strings.TrimPrefix "/" $img | relURL }}" alt="{{ if $placeholder }}{{ else }}{{ $m.Title }}{{ end }}" width="800" height="600" loading="lazy" decoding="async" />
+  </figure>
   <div class="mcard-top">
     <span class="mcard-step">{{ with .group }}{{ . }}<span aria-hidden="true"> · </span>{{ end }}{{ $m.Params.step }}</span>
     {{ partial "status.html" $m.Params.status }}

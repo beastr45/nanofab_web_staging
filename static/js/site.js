@@ -66,7 +66,7 @@
     }
   }
 
-  /* ---------- full-screen menu (phones, tablets) ---------- */
+  /* ---------- full-screen menu (the button in the top right, every width) ---------- */
   var menu = $('#menu'), toggle = $('#menuToggle'), closeBtn = $('#menuClose'), lastFocus = null;
   if (menu && toggle && closeBtn) {
     menu.hidden = false;
@@ -95,7 +95,7 @@
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     });
-    matchMedia('(min-width: 1024px)').addEventListener('change', function (m) { if (m.matches) closeMenu(false); });
+    
   }
 
   /* ---------- machine cards: open in place ---------- */

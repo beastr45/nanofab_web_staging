@@ -2,8 +2,8 @@
      THE HEADER: brand left, the main navigation right, always on
      screen. The bar takes the colour of whatever section is under it
      (each section carries data-nav="dark|light"; static/js/site.js
-     does the switching). Under 1024px the links fold into the
-     full-screen menu below.
+     does the switching). The Join button and the menu button show at
+     every width; under 1024px the text links fold into the menu.
 
      The links come from [menus.main] in hugo.toml, plus Docs (the
      mdBook site, params.docsURL) and the Join button (Discord).
@@ -16,8 +16,7 @@
   <nav class="nav" id="nav" aria-label="Main navigation">
     <a class="brand" href="{{ "" | relURL }}" {{ if .IsHome }}aria-current="page"{{ end }} aria-label="{{ site.Title }}, home">
       {{ with site.Params.logo }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" width="32" height="32" />{{ end }}
-      <span class="brand-name">Minnesota Nanofabrication</span>
-      <span class="brand-tag">University of Minnesota</span>
+      <span class="brand-text"><span class="brand-name">Minnesota Nanofabrication</span><span class="brand-tag">Student club · University of Minnesota</span></span>
     </a>
     <div class="nav-actions">
       {{ range site.Menus.main }}
@@ -26,7 +25,7 @@
         <a class="nav-link" href="{{ $href }}"{{ if $current }} aria-current="page"{{ end }}{{ if hasPrefix .URL "/#" }} data-spy="{{ strings.TrimPrefix "/#" .URL }}"{{ end }}>{{ .Name }}</a>
       {{ end }}
       {{ with $docs }}<a class="nav-link" href="{{ . }}" target="_blank" rel="noopener">Docs {{ partial "icon.html" "ne" }}</a>{{ end }}
-      {{ with $join }}<a class="nav-cta" href="{{ . }}" target="_blank" rel="noopener">Join the club</a>{{ end }}
+      {{ with $join }}<a class="nav-cta" href="{{ . }}" target="_blank" rel="noopener">Join<span class="nav-cta-long">&nbsp;the club</span></a>{{ end }}
       <button class="nav-menu" id="menuToggle" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false"><span></span></button>
     </div>
   </nav>
@@ -42,11 +41,11 @@
   </div>
   <div class="menu-body">
     <ul class="menu-main">
-      <li><a href="{{ "" | relURL }}" data-close{{ if .IsHome }} aria-current="page"{{ end }}><span class="idx">/01</span>Home</a></li>
+      <li><a href="{{ "" | relURL }}" data-close{{ if .IsHome }} aria-current="page"{{ end }}><span class="idx">01</span>Home</a></li>
       {{ range $i, $m := site.Menus.main }}
         {{ $current := or ($page.IsMenuCurrent "main" $m) ($page.HasMenuCurrent "main" $m) }}
         {{ $href := $m.URL }}{{ if hasPrefix $href "/#" }}{{ $href = printf "%s%s" ("" | relURL) (strings.TrimPrefix "/" $href) }}{{ end }}
-        <li><a href="{{ $href }}" data-close{{ if $current }} aria-current="page"{{ end }}><span class="idx">/{{ printf "%02d" (add $i 2) }}</span>{{ $m.Name }}</a></li>
+        <li><a href="{{ $href }}" data-close{{ if $current }} aria-current="page"{{ end }}><span class="idx">{{ printf "%02d" (add $i 2) }}</span>{{ $m.Name }}</a></li>
       {{ end }}
     </ul>
     <div class="menu-side">

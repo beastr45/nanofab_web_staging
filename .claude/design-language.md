@@ -13,10 +13,17 @@ ground, Fraunces / Libre Franklin / Courier Prime, maroon accent and the
 
 ## 1. The idea
 
-**Stark, confident, editorial.** The references are
+**Stark, confident, editorial.** The references were
 [Stone Arch Silicon](https://stone-arch-silicon.github.io/stone-arch-silicon/)
-(structure, navigation, type, cards) and [Palantir](https://www.palantir.com/)
-(high contrast, black and white, nothing decorative). The site should read
+(structure, navigation, cards) and [Palantir](https://www.palantir.com/)
+(high contrast, black and white, nothing decorative). The site must not read
+as a copy of either: it has its own type (IBM Plex, set light), its own
+marker and one quiet motif of its own (below).
+
+**One motif: the alignment mark.** A lithography alignment cross, the thing
+every mask layer is lined up against. It appears as the eyebrow marker, the
+corner brackets in the home hero (with the lab's coordinates), and a small
+UV cross on the placeholder machine drawings. That's all; don't add more. The site should read
 like a serious engineering organization that happens to be students.
 
 **A visitor always knows where they are.** Every page has the persistent top
@@ -57,9 +64,9 @@ Purple is a signal, so it has to stay rare. Allowed:
 - **Hover / focus** on primary buttons, CTA blocks, links, pills.
 - **The current location**: active nav link underline, active sub-nav tab,
   active mobile menu item, the active docs sidebar item.
-- **The eyebrow square** (7×7 px) in front of a section label.
-- **One word of the hero headline** ("fab.") and the full stop square after
-  the About statement.
+- **The eyebrow cross** (11×11 px, 1px strokes) in front of a section label.
+- **The full stop** at the end of the hero headline, and the full stop
+  square after the About statement.
 - **The glow**: a soft radial gradient in the top-right of the home hero and
   inner page heroes. Never more than one glow per screen.
 - **Operational** build status (when a machine is running).
@@ -72,18 +79,19 @@ element competing in a single viewport at rest.
 
 ## 3. Type
 
-Two families, self-hosted from `static/fonts/` (SIL OFL): **Geist** for
-everything and **Geist Mono** for labels and data. Weights stay light:
-headings are 400, emphasis 450–500. Tight negative tracking on large type.
+Two families, self-hosted from `static/fonts/` (SIL OFL): **IBM Plex Sans**
+for everything and **IBM Plex Mono** for labels and data. Display type is
+**300 (light)**; card titles and body 400; emphasis 450–500. Plex needs less
+negative tracking than a grotesk: −0.02 to −0.035em on large type.
 
 | Role | Class | Size | Tracking |
 |---|---|---|---|
-| Home hero | `.hero-title` | `clamp(52px, 10vw, 176px)` | −0.06em |
-| Inner page title | `.page-title` | `clamp(44px, 6.4vw, 112px)` | −0.052em |
-| Statement | `.statement` | `clamp(34px, 5vw, 84px)` | −0.048em |
-| Section heading | `.h2` | `clamp(38px, 5vw, 80px)` | −0.045em |
-| Band heading | `.band-head h2` | `clamp(32px, 3.8vw, 60px)` | −0.045em |
-| Card / tile title | `.mcard-title`, `.path h3` | 24–36px | −0.035em |
+| Home hero | `.hero-title` | `clamp(48px, 8.4vw, 148px)`, 300, max 13ch | −0.035em |
+| Inner page title | `.page-title` | `clamp(42px, 6vw, 104px)`, 300 | −0.035em |
+| Statement | `.statement` | `clamp(32px, 4.6vw, 78px)`, 300 | −0.03em |
+| Section heading | `.h2` | `clamp(36px, 4.6vw, 76px)`, 300 | −0.03em |
+| Band heading | `.band-head h2` | `clamp(32px, 3.8vw, 60px)`, 300 | −0.03em |
+| Card / tile title | `.mcard-title`, `.path h3` | 23–36px, 400 | −0.02em |
 | Lead | `.lead`, `.hero-lead` | 17–21px, `--muted` | — |
 | Body | `body` | 17px (16px on phones) | −0.006em |
 | Long-form prose | `.prose` | 18px, line-height 1.7, max 68ch | — |
@@ -106,23 +114,25 @@ Headings don't end in full stops, **except** the big display statements
   footer pills.
 - Hairlines (`--line`, `--line-2`) separate things; no shadows, no cards
   floating on shadows.
-- Breakpoints: 1280 (brand tag drops), 1180 (grids 4→2/3), 1023 (nav links
-  fold into the menu, machine grid 3→2), 900 (heads stack), 640 (phones:
-  single columns, 2-up team).
+- Breakpoints: 1180 (grids 4→2/3), 1023 (nav text links fold into the
+  menu, machine grid 3→2), 900 (heads stack), 640 (phones: single columns,
+  2-up team, "Join the club" shortens to "Join"), 520 (brand tag drops).
 
 ## 5. Components
 
 **Header** (`partials/header.html`). Fixed, 72px (64px under 900px).
 Transparent over the dark hero, then frosted black or frosted white
 depending on the section underneath (`data-nav="dark|light"` on every
-section; `site.js` switches it). Brand left; links from `[menus.main]`, Docs
-(external, ↗) and the white "Join the club" button right. Under 1024px the
-links become a full-screen menu: numbered big links, plus Documentation and
-Connect columns. Esc closes it; focus is trapped while open.
+section; `site.js` switches it). Brand left (logo, name, and a small mono line "Student club · University of
+Minnesota" under it); links from `[menus.main]`, Docs (external, ↗), the
+white "Join the club" button and the menu button right. **The Join button
+and the menu button show at every width**; under 1024px the text links
+fold into the menu. The menu is full-screen: numbered big links, plus
+Documentation and Connect columns. Esc closes it; focus is trapped while open.
 
 **Hero** (home). Full viewport, dark. The lab photograph in greyscale at low
 opacity, a bottom/left shade, the UV glow top-right, film grain. Eyebrow,
-headline with one purple word, lead and two buttons (solid + line), then a
+the alignment-mark brackets, headline (light, with a UV full stop), lead and two buttons (solid + line), then a
 `.specs` row of four live facts that are also links. Counts are computed from
 content, never typed.
 
@@ -145,10 +155,12 @@ inverts to black with the "go" link in UV. Used for the bands on the home
 page.
 
 **Machine cards** (`partials/machine-card.html`). Hairline grid, three
-across. Mono "Process · Step" label and build status on top, name, one-line
+across. A 4:3 picture on top (the machine's `image:`, or a grey line
+drawing for its process until a photo exists; every card uses the same ratio
+so the grid lines up). Then the mono "Process · Step" label and build status on top, name, one-line
 summary, "+ Read more". The top of the card is a real `<button>` with
-`aria-expanded` and `aria-controls`; opening a card makes it span the row
-and shows the member's Markdown, a facts list (process, step, build, lead,
+`aria-expanded` and `aria-controls`; opening a card makes it span the row,
+moves the 4:3 picture to the left of the title, and shows the member's Markdown, a facts list (process, step, build, lead,
 part-of) and "Full documentation ↗". `#slug` in the URL opens that card.
 Without JavaScript all cards render open.
 

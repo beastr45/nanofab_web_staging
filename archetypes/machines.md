@@ -14,6 +14,10 @@ status: "planned"
 weight: 50
 # One plain sentence. Shown on the card before it is opened.
 summary: ""
+# A photo of the machine, once it exists. Put the file in
+# static/images/machines/ and write its path from /images/. It is
+# cropped to 4:3 (landscape). Leave it out to show the placeholder.
+# image: "/images/machines/my-machine.jpg"
 # Only for a subsystem: the file name of the machine it is part of.
 # partOf: "maskless-stepper"
 # Only if its docs page is somewhere other than machines/<this file>.html:

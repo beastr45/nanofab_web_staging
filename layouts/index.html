@@ -16,18 +16,20 @@
 {{ $machinesURL := "machines/" | relURL }}
 
 {{/* ---------------- HERO ---------------- */}}
-{{ $words := split (site.Params.heroTitle | default "Build the fab.") " " }}
-{{ $last := index $words (sub (len $words) 1) }}
-{{ $first := delimit (first (sub (len $words) 1) $words) " " }}
+{{/* The headline is hugo.toml heroTitle. A trailing full stop is drawn in UV. */}}
+{{ $title := site.Params.heroTitle | default "Bare wafer to working chip." }}
+{{ $stop := hasSuffix $title "." }}
 <section class="hero theme-dark" id="top" data-nav="dark">
   <div class="hero-media" aria-hidden="true">
     {{ with site.Params.heroImage }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" width="1800" height="1201" fetchpriority="high" decoding="async" />{{ end }}
     <div class="hero-shade"></div>
     <div class="grain"></div>
   </div>
+  {{/* Wafer-style alignment marks in the hero's top corners, with the lab's coordinates. Decoration only. */}}
+  <div class="reg" aria-hidden="true"><i></i><i></i><span>44.974° N · 93.232° W</span></div>
   <div class="wrap">
     <p class="eyebrow">A student-built semiconductor fab</p>
-    <h1 class="hero-title">{{ $first }} <span class="uv">{{ $last }}</span></h1>
+    <h1 class="hero-title">{{ if $stop }}{{ strings.TrimSuffix "." $title }}<span class="uv">.</span>{{ else }}{{ $title }}{{ end }}</h1>
     <div class="hero-row">
       <p class="hero-lead">{{ site.Params.heroLead }}</p>
       <div class="hero-cta">
@@ -47,13 +49,13 @@
 {{/* ---------------- /01 ABOUT ---------------- */}}
 <section class="sec theme-light" id="about" data-nav="light">
   <div class="wrap">
-    <p class="eyebrow reveal"><span class="idx">/01</span> About</p>
+    <p class="eyebrow reveal"><span class="idx">01</span> About</p>
     <p class="statement reveal">Almost nobody gets to build a chip fab as an undergraduate. So we are building one<span class="dot" aria-hidden="true"></span></p>
     <div class="paths">
       {{ range $i, $b := $bands }}
       {{ $n := len (where $machines "Params.band" $b.slug) }}
       <a class="path reveal" href="{{ $machinesURL }}#{{ $b.slug }}">
-        <span class="idx"><span>Band /{{ printf "%02d" (add $i 1) }}</span><span>{{ $n }} machines</span></span>
+        <span class="idx"><span>Band {{ printf "%02d" (add $i 1) }}</span><span>{{ $n }} machines</span></span>
         <h3>{{ $b.name }}</h3>
         {{ with $b.tagline }}<p>{{ . }}</p>{{ end }}
         <span class="go">See the machines {{ partial "icon.html" "arrow" }}</span>
@@ -75,7 +77,7 @@
 <section class="sec theme-dark" id="team" data-nav="dark">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal"><span class="idx">/02</span> Team</p>
+      <p class="eyebrow reveal"><span class="idx">02</span> Team</p>
       <h2 class="h2 reveal">The people who run the club.</h2>
       <div class="sec-aside reveal"><a class="btn btn-line" href="{{ "team/" | relURL }}">Full team and advisors {{ partial "icon.html" "arrow" }}</a></div>
     </div>
@@ -98,7 +100,7 @@
 <section class="sec theme-light" id="blog" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal"><span class="idx">/03</span> Blog</p>
+      <p class="eyebrow reveal"><span class="idx">03</span> Blog</p>
       <h2 class="h2 reveal">From the lab.</h2>
       <div class="sec-aside reveal"><a class="btn btn-line" href="{{ "blog/" | relURL }}">All posts {{ partial "icon.html" "arrow" }}</a></div>
     </div>
@@ -115,7 +117,7 @@
 <section class="sec theme-paper" id="sponsors" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal"><span class="idx">/04</span> Sponsors</p>
+      <p class="eyebrow reveal"><span class="idx">04</span> Sponsors</p>
       <h2 class="h2 reveal">Built with our partners.</h2>
       <p class="lead reveal">Their engineers review our designs and their parts are in our machines.</p>
     </div>

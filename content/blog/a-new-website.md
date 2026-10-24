@@ -2,6 +2,9 @@
 title: "A new website, and where everything went"
 date: 2026-10-24
 kicker: "Site news"
+# An example post. Kept as a draft so it never shows on the live site;
+# copy its shape, then delete it. README, "Post to the blog".
+draft: true
 description: "The club website has a new look, real navigation, a blog, one page for every machine, and a separate documentation site. Here is the tour."
 ---
 
@@ -19,7 +22,7 @@ The website has been rebuilt. It looks different, but the bigger change is how i
 
 ## A new look
 
-The colours now come from the club logo: black, white, and UV purple. Purple is used sparingly, only where something should catch your eye: a link under the cursor, the page you are on, the most important button. The type is Geist, set large, with a lot of space around it.
+The colours now come from the club logo: black, white, and UV purple. Purple is used sparingly, only where something should catch your eye: a link under the cursor, the page you are on, the most important button. The type is IBM Plex, set large and light, with a lot of space around it.
 
 ## How to add to it
 
