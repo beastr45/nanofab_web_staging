@@ -1,0 +1,101 @@
+{{/* ==============================================================
+     THE TEAM, grouped by the work they do.
+       {{ partial "people.html" (dict "limit" 0) }}   all groups
+     Content: data/officers.yaml and data/leads.yaml. Nothing here
+     needs editing to add or remove a person.
+
+     One person, one card: someone listed as an officer AND a lead
+     shows once, with every role. A person is filed under the band of
+     the first machine their roles name (machine title -> `band:` in
+     content/machines/), so each machine's owner appears inside the
+     band it belongs to. Everyone else (finance, outreach, web) goes
+     under the band marked `fab: false` in data/bands.yaml. Machine
+     roles link to that machine's card on /machines/.
+     ============================================================== */}}
+{{ $officers := default slice hugo.Data.officers }}
+{{ $leads    := default slice hugo.Data.leads }}
+{{ $bands    := default slice hugo.Data.bands }}
+{{ $otherLabel := "Club Operations" }}
+{{ range where $bands "fab" false }}{{ $otherLabel = .name }}{{ end }}
+
+{{ $aliases := dict
+  "maskless photolithography stepper" "maskless litho stepper"
+  "spin coater"                       "spinner"
+  "alignment firmware"                "wafer stage alignment firmware"
+}}
+{{ $machineBand := dict }}{{ $machineURL := dict }}
+{{ range where site.RegularPages "Section" "machines" }}
+  {{ $k := .Title | lower | replaceRE "[^a-z0-9]+" " " | strings.TrimSpace }}
+  {{ $machineURL = merge $machineURL (dict $k (printf "%s#%s" ("machines/" | relURL) .File.ContentBaseName)) }}
+  {{ with .Params.band }}{{ $machineBand = merge $machineBand (dict $k .) }}{{ end }}
+{{ end }}
+
+{{/* ---- one roster, officers first ---- */}}
+{{ $order := slice }}{{ $roster := dict }}{{ $seq := 0 }}
+{{ range (append $leads $officers) }}
+  {{ $key := .name | lower | strings.TrimSpace }}
+  {{ $new := slice }}
+  {{ with .role }}{{ if reflect.IsSlice . }}{{ $new = . }}{{ else }}{{ $new = slice . }}{{ end }}{{ end }}
+  {{ if $key }}
+    {{ if isset $roster $key }}
+      {{ $prev := index $roster $key }}
+      {{ $roles := $prev.roles }}
+      {{ range $new }}{{ if not (in $roles .) }}{{ $roles = $roles | append . }}{{ end }}{{ end }}
+      {{ $merged := merge $prev (dict "roles" $roles) }}
+      {{ if and (not $prev.photo) .photo }}{{ $merged = merge $merged (dict "photo" .photo "photoPosition" .photoPosition) }}{{ end }}
+      {{ $roster = merge $roster (dict $key $merged) }}
+    {{ else }}
+      {{ $seq = add $seq 1 }}
+      {{ $roster = merge $roster (dict $key (merge . (dict "roles" $new "pos" (.order | default $seq)))) }}
+      {{ $order = $order | append $key }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* ---- file into bands ---- */}}
+{{ $buckets := dict }}{{ $other := slice }}
+{{ range $order }}
+  {{ $p := index $roster . }}
+  {{ $slug := "" }}
+  {{ range $p.roles }}{{ if not $slug }}
+    {{ $rk := . | lower | replaceRE "[^a-z0-9]+" " " | strings.TrimSpace }}
+    {{ with index $aliases $rk }}{{ $rk = . }}{{ end }}
+    {{ with index $machineBand $rk }}{{ $slug = . }}{{ end }}
+  {{ end }}{{ end }}
+  {{ if $slug }}
+    {{ $buckets = merge $buckets (dict $slug ((index $buckets $slug | default slice) | append $p)) }}
+  {{ else }}
+    {{ $other = $other | append $p }}
+  {{ end }}
+{{ end }}
+{{ $groups := slice }}
+{{ with $other }}{{ $groups = $groups | append (dict "label" $otherLabel "slug" "operations" "people" (sort . "pos")) }}{{ end }}
+{{ range sort $bands "index" }}{{ $b := . }}{{ with index $buckets $b.slug }}{{ $groups = $groups | append (dict "label" $b.name "slug" $b.slug "people" (sort . "pos")) }}{{ end }}{{ end }}
+
+{{ range $groups }}
+<h3 class="team-group" id="team-{{ .slug }}">{{ .label }}</h3>
+<ul class="team">
+  {{ range .people }}
+  {{ $p := . }}
+  <li class="person reveal">
+    {{ with $p.photo }}
+    <img class="person-img" src="{{ replace (strings.TrimPrefix "/" . | relURL) " " "%20" }}" alt="" width="112" height="112" loading="lazy" decoding="async" style="object-position: {{ $p.photoPosition | default "center 25%" }}" />
+    {{ else }}
+    {{ $w := split ($p.name | strings.TrimSpace) " " }}
+    <span class="person-initials" aria-hidden="true">{{ upper (substr (index $w 0) 0 1) }}{{ if gt (len $w) 1 }}{{ upper (substr (index $w (sub (len $w) 1)) 0 1) }}{{ end }}</span>
+    {{ end }}
+    <h4>{{ $p.name }}</h4>
+    {{ with $p.roles }}
+    <ul>
+      {{ range . }}
+      {{ $role := . }}
+      {{ $rk := $role | lower | replaceRE "[^a-z0-9]+" " " | strings.TrimSpace }}
+      {{ with index $aliases $rk }}{{ $rk = . }}{{ end }}
+      {{ with index $machineURL $rk }}<li><a href="{{ . }}">{{ $role }}</a></li>{{ else }}<li>{{ $role }}</li>{{ end }}
+      {{ end }}
+    </ul>
+    {{ end }}
+  </li>
+  {{ end }}
+</ul>
+{{ end }}

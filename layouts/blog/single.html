@@ -1,0 +1,26 @@
+{{ define "main" }}
+{{ $meta := printf "<span>%s</span><span>%d min read</span>" (.Date.Format "January 2, 2006") .ReadingTime }}
+{{ with .Params.author }}{{ $meta = printf "%s<span>%s</span>" $meta . }}{{ end }}
+{{ partial "page-hero.html" (dict "page" . "eyebrow" "Post" "lead" .Params.description "meta" ($meta | safeHTML)) }}
+<section class="sec theme-light" data-nav="light">
+  <div class="wrap post-layout">
+    <article class="prose">
+      {{ .Content }}
+      <nav class="pager" aria-label="More posts">
+        {{ with .PrevInSection }}<a href="{{ .RelPermalink }}"><span class="k">Newer</span><b>{{ .Title }}</b></a>{{ else }}<span></span>{{ end }}
+        {{ with .NextInSection }}<a class="next" href="{{ .RelPermalink }}"><span class="k">Older</span><b>{{ .Title }}</b></a>{{ end }}
+      </nav>
+    </article>
+    <aside class="post-aside">
+      {{ if gt (len .TableOfContents) 40 }}
+      <h2>On this page</h2>
+      {{ .TableOfContents }}
+      {{ end }}
+      <h2>Keep reading</h2>
+      <a href="{{ "blog/" | relURL }}">All posts</a>
+      <a href="{{ "machines/" | relURL }}">The machines</a>
+      {{ with site.Params.docsURL }}<a href="{{ . }}" target="_blank" rel="noopener">Documentation ↗</a>{{ end }}
+    </aside>
+  </div>
+</section>
+{{ end }}

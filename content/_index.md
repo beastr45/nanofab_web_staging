@@ -1,3 +1,3 @@
 ---
-title: "We’re building a fab"
+title: "Minnesota Nanofabrication Club"
 ---

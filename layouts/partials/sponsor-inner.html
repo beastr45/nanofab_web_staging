@@ -1,0 +1,9 @@
+{{ $s := . }}
+<div class="partner-logo">
+  {{ with $s.logo }}<img src="{{ replace (strings.TrimPrefix "/" . | relURL) " " "%20" }}" alt="{{ $s.name }} logo" loading="lazy" decoding="async" />{{ else }}<span class="h3">{{ $s.name }}</span>{{ end }}
+</div>
+<div>
+  <h3>{{ $s.name }}</h3>
+  {{ with $s.description }}<p>{{ . }}</p>{{ end }}
+  {{ with $s.url }}<span class="k">{{ $s.linkLabel | default (replaceRE `^https?://(www\.)?([^/]+).*$` "$2" .) }} {{ partial "icon.html" "ne" }}</span>{{ end }}
+</div>

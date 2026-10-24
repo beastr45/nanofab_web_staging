@@ -1,99 +1,17 @@
-{{/* ==================================================================
-     PARTNERS & SPONSORS — the last section on the paper ground.
-
-     THE RELATIONSHIP, STATED CORRECTLY. These companies are not a
-     supply catalogue. Their engineers review our designs and iterate
-     with us, and they sponsor components. The old framing ("Who
-     supplies the line", a "SUPPLIES" eyebrow on every row) described
-     a purchase order and was wrong; it has been replaced by the two
-     fragments in the lead below. Keep that framing if you rewrite
-     this section.
-
-     A ledger, not a logo wall: the hero already runs the rolling
-     ticker, and two cards in a three-column grid would read as an
-     empty grid. One full-width row per sponsor — mark, name, what we
-     work on with them, link out. Two rows read as deliberate because
-     each one is full width.
-
-     Cut (design-language §2): the lead paragraph ("Two companies
-     provide hardware we could not build…"), the "SUPPLIES" eyebrow on
-     every row, the 01/02 index numerals, and the three-sentence
-     "Open" invitation, which is now one line.
-
-     Same left margin and the same py-28 / py-40 rhythm as every other
-     section, on the same paper ground, so the scroll stays continuous
-     (§6). No panel, no tint, no box.
-
-     Content comes from data/sponsors.yaml. Adding a sponsor means
-     editing that file and nothing else.
-     CSS: static/css/footer.css (the SPONSORS block at the end).
-     ================================================================== */}}
-
-{{/* FULL-BLEED SECTION, measure on the inner div.
-
-     The hero is sticky and sits behind the page (see hero.css), so any
-     section after it must paint its own background edge to edge. This
-     section used to carry mx-auto/max-w-6xl itself, which left the
-     photograph showing down both margins. Keep bg-paper on the
-     <section> and the measure on the div inside it. */}}
-<section id="sponsors" class="bg-paper">
-  <div class="mx-auto max-w-6xl px-6 py-28 sm:py-40">
-
-  {{/* The lead is one of the rare cases §2 allows: the heading names
-       the people, and nothing else on the page says what we actually
-       do with them. Two fragments, no sentence. */}}
-  {{ partial "section-head.html" (dict
-      "title" "Partners & Sponsors"
-      "lead"  "Experienced industry engineers give us design feedback and sponsor the parts.") }}
-
-  <ul class="mt-14 sm:mt-20 border-t border-line">
-    {{ range hugo.Data.sponsors }}
-    {{/* The bare domain reads as a reference rather than a call to
-         action — "idealvac.com" instead of "Visit website". A sponsor
-         can override it with linkLabel in data/sponsors.yaml. */}}
-    {{ $host := "" }}
-    {{ with .url }}{{ $host = strings.TrimPrefix "www." (urls.Parse .).Host }}{{ end }}
-    {{ $label := .linkLabel | default $host }}
-
-    {{/* The row hairlines separate two sponsors' copy that would
-         otherwise run together — the one kind of rule §2 allows. */}}
-    <li class="sponsor-row border-b border-line">
-      <div class="py-10 sm:py-12 grid gap-6 sm:gap-8 sm:grid-cols-[19rem_minmax(0,1fr)] lg:grid-cols-[21rem_minmax(0,1fr)_auto] sm:items-start">
-
-        {{/* The plate: a common white field so a wide wordmark and a
-             tall mark come out the same optical size. Square corners,
-             one hairline, no shadow. */}}
-        {{/* No plate and no box. basler-logo.png is an opaque white
-             JPEG-style PNG while ideal-vac.png is transparent, so one
-             logo used to float and the other sat in a white rectangle.
-             multiply blends white into the paper ground, which lands
-             both of them on the page the same way. */}}
-        <div class="sponsor-mark">
-          {{ if .logo }}
-          <img src="{{ strings.TrimPrefix "/" (.logo) | relURL }}"
-               alt="{{ .name }}" loading="lazy" decoding="async" />
-          {{ else }}
-          <span class="font-display font-semibold text-[1.75rem] tracking-tight">{{ .name }}</span>
-          {{ end }}
-        </div>
-
-        <div>
-          <p class="text-[1.1875rem] leading-relaxed max-w-xl">{{ .description }}</p>
-        </div>
-
-        {{ with .url }}
-        <a href="{{ . }}" rel="noopener"
-           class="sponsor-out text-[1.0625rem] inline-flex items-baseline gap-2 self-start lg:pt-2 whitespace-nowrap">
-          <span>{{ $label }}</span>
-          <span class="sponsor-arrow" aria-hidden="true">&#8599;</span>
-        </a>
-        {{ end }}
-      </div>
-    </li>
-    {{ end }}
-  </ul>
-
-  {{/* The invitation, in one line. Phrased as partnering, not
-       supplying — see the note at the top of this file. */}}
-  </div>
-</section>
+{{/* ==============================================================
+     PARTNERS & SPONSORS from data/sponsors.yaml: name, description,
+     logo (optional), url (optional), linkLabel (optional).
+     ============================================================== */}}
+{{ with hugo.Data.sponsors }}
+<div class="partners">
+  {{ range . }}
+  {{ $s := . }}
+  {{ $inner := partial "sponsor-inner.html" $s }}
+  {{ with $s.url }}
+  <a class="partner reveal" href="{{ . }}" target="_blank" rel="noopener">{{ $inner }}</a>
+  {{ else }}
+  <div class="partner reveal">{{ $inner }}</div>
+  {{ end }}
+  {{ end }}
+</div>
+{{ end }}

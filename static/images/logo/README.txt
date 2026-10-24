@@ -47,4 +47,4 @@ the umn.edu / college links moved into the footer as plain text.
 
 If you want a University mark on the site, the answer is the Block M
 RSO mark in the footer block described above. Check with your Student
-Unions & Activities advisor first. Full detail is in README section 9.
+Unions & Activities advisor first. Full detail is in README section 8.

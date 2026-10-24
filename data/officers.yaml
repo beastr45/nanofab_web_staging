@@ -1,6 +1,6 @@
 # ===================================================================
 # OFFICERS — the club’s leadership, shown in the "Who runs the club"
-# section on the homepage.
+# section on the homepage and on /team/.
 #
 # TO ADD an officer:     copy a whole "- name:" block and edit it.
 # TO REMOVE an officer:  delete their block.
@@ -15,7 +15,7 @@
 #   photo  optional — leave "" and their card shows their initials
 #                     instead, which looks intentional rather than
 #                     broken. Photos go in static/images/officers/
-#                     (see README section 4.11). Name files in
+#                     (see README section 5). Name files in
 #                     lowercase with hyphens and no spaces.
 #   photoPosition
 #          optional — only needed if a photo crops badly. Officer

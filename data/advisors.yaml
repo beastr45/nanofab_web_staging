@@ -1,5 +1,5 @@
 # ===================================================================
-# ADVISORS — shown in the "Support" section on the homepage.
+# ADVISORS — shown in the Advisors section of /team/.
 #
 # TO ADD an advisor:    copy a whole "- name:" block and edit it.
 # TO REMOVE an advisor: delete their block (or put a # in front of
@@ -14,7 +14,7 @@
 # departments first appear in this file. A new department needs no
 # template change: give someone a new `dept` string and a heading
 # with that exact text appears. The heading already names the
-# department, so `role` must NOT repeat it (design-language §2).
+# department, so `role` must NOT repeat it (it would say the same thing twice).
 #
 # FIELDS
 #   name   required — the person’s name
@@ -43,7 +43,7 @@
 #                     it's trimmed to fit the frame: "X% Y%", where
 #                     X is left→right and Y is top→bottom. Default
 #                     "center 15%". Use it when a face looks off-centre
-#                     or cut off. See README 4.9.
+#                     or cut off. See README section 5.
 #
 # PHOTOS go in static/images/advisors/. Any size works — they’re
 # cropped to a square automatically, centred on the middle of the
@@ -79,7 +79,7 @@
   link: "https://www.linkedin.com/in/scott-hareland-ph-d-410a903/"
   photo: "/images/advisors/Scott.jpeg"
   # His face sits left of centre in the original, so shift the framing
-  # left (25% across) to centre it. See README 4.9.
+  # left (25% across) to centre it. See README section 5.
   photoPosition: "25% 0%"
 
 - name: Ognjen Ilic

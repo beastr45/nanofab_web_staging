@@ -1,14 +1,14 @@
 # ==================================================================
 # THE FOUR BANDS — the top level of the whole site.
 #
-# Drives the homepage, the full-screen menu, /machines/ and search.
+# Drives the band tiles on the homepage, the /machines/ gallery and the
+# grouping on /team/.
 #
 #   name     heading shown everywhere
 #   slug     used for #anchors and for `band:` in machine front
 #            matter — lowercase, no spaces
-#   index    sort order only. DO NOT render it as a 01/02 marking;
-#            that was decoration and has been removed (see
-#            .claude/design-language.md §2).
+#   index    sort order. The /01, /02 wayfinding numbers on the
+#            homepage tiles and the /machines/ section bar follow it.
 #   tagline  ONE short line. There is deliberately no `description`
 #            field — two lines of prose per band was redundant.
 #
@@ -63,6 +63,6 @@
   index: 4
   tagline: Finance, outreach, design, and the website.
   # Logistics runs the club, not the line. fab: false keeps it out
-  # of the machine listings (homepage, /machines/, menu, footer,
-  # search) while it still groups people in the Team section.
+  # of the machine listings (homepage tiles and /machines/) while it
+  # still groups people on /team/.
   fab: false

@@ -1,19 +1,138 @@
 {{ define "main" }}
-  {{/* ------------------------------------------------------------
-       Homepage order, and the reasoning for it:
+{{/* ==============================================================
+     THE HOMEPAGE
+       hero      the lab, the goal, two ways in, live counts
+       /01 About what the club is, and one tile per band of the fab
+       /02 Team  the officers (full roster on /team/)
+       /03 Blog  latest posts
+       /04 Sponsors
+       closing   Join / Get in touch
+     Every number is counted from content at build time.
+     ============================================================== */}}
+{{ $machines := where site.RegularPages "Section" "machines" }}
+{{ $building := where $machines "Params.status" "building" }}
+{{ $bands := sort (where hugo.Data.bands "fab" true) "index" }}
+{{ $docs := site.Params.docsURL }}
+{{ $machinesURL := "machines/" | relURL }}
 
-       1. hero      the fab itself, full screen, with the goal on it
-       2. bands     the four boxes — one click to any machine's docs
-       3. team      the people building it
-       4. advisors  faculty, and grad mentors once they commit
-       5. sponsors  kept short; the hero already runs the logo ticker
+{{/* ---------------- HERO ---------------- */}}
+{{ $words := split (site.Params.heroTitle | default "Build the fab.") " " }}
+{{ $last := index $words (sub (len $words) 1) }}
+{{ $first := delimit (first (sub (len $words) 1) $words) " " }}
+<section class="hero theme-dark" id="top" data-nav="dark">
+  <div class="hero-media" aria-hidden="true">
+    {{ with site.Params.heroImage }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" width="1800" height="1201" fetchpriority="high" decoding="async" />{{ end }}
+    <div class="hero-shade"></div>
+    <div class="grain"></div>
+  </div>
+  <div class="wrap">
+    <p class="eyebrow">A student-built semiconductor fab</p>
+    <h1 class="hero-title">{{ $first }} <span class="uv">{{ $last }}</span></h1>
+    <div class="hero-row">
+      <p class="hero-lead">{{ site.Params.heroLead }}</p>
+      <div class="hero-cta">
+        <a class="btn btn-solid" href="{{ $machinesURL }}">See the machines {{ partial "icon.html" "arrow" }}</a>
+        {{ with site.Params.discordURL }}<a class="btn btn-line" href="{{ . }}" target="_blank" rel="noopener">Join on Discord {{ partial "icon.html" "ne" }}</a>{{ end }}
+      </div>
+    </div>
+    <div class="specs">
+      <a class="spec" href="{{ $machinesURL }}"><b>{{ len $machines }} machines</b><span>Designed and built by students</span></a>
+      <a class="spec" href="{{ $machinesURL }}"><b>{{ len $building }} in build</b><span>Right now</span></a>
+      {{ with index $bands 0 }}<a class="spec" href="{{ $machinesURL }}#{{ .slug }}"><b>{{ .name }}</b><span>{{ .tagline }}</span></a>{{ end }}
+      {{ with $docs }}<a class="spec" href="{{ . }}" target="_blank" rel="noopener"><b>Documentation {{ partial "icon.html" "ne" }}</b><span>Every build, written up</span></a>{{ end }}
+    </div>
+  </div>
+</section>
 
-       Mission/pillars were removed: "Custom / Design / Build" said
-       one idea three times and pushed the machines below the fold.
-       ------------------------------------------------------------ */}}
-  {{ partial "hero.html" . }}
-  {{ partial "bands.html" . }}
-  {{ partial "team.html" . }}
-  {{ partial "advisors.html" . }}
-  {{ partial "sponsors.html" . }}
+{{/* ---------------- /01 ABOUT ---------------- */}}
+<section class="sec theme-light" id="about" data-nav="light">
+  <div class="wrap">
+    <p class="eyebrow reveal"><span class="idx">/01</span> About</p>
+    <p class="statement reveal">Almost nobody gets to build a chip fab as an undergraduate. So we are building one<span class="dot" aria-hidden="true"></span></p>
+    <div class="paths">
+      {{ range $i, $b := $bands }}
+      {{ $n := len (where $machines "Params.band" $b.slug) }}
+      <a class="path reveal" href="{{ $machinesURL }}#{{ $b.slug }}">
+        <span class="idx"><span>Band /{{ printf "%02d" (add $i 1) }}</span><span>{{ $n }} machines</span></span>
+        <h3>{{ $b.name }}</h3>
+        {{ with $b.tagline }}<p>{{ . }}</p>{{ end }}
+        <span class="go">See the machines {{ partial "icon.html" "arrow" }}</span>
+      </a>
+      {{ end }}
+      {{ with $docs }}
+      <a class="path reveal" href="{{ . }}" target="_blank" rel="noopener">
+        <span class="idx"><span>Docs</span><span>mdBook</span></span>
+        <h3>Documentation</h3>
+        <p>How every machine works, how it is built, and how to help.</p>
+        <span class="go">Open the docs {{ partial "icon.html" "ne" }}</span>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+{{/* ---------------- /02 TEAM ---------------- */}}
+<section class="sec theme-dark" id="team" data-nav="dark">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow reveal"><span class="idx">/02</span> Team</p>
+      <h2 class="h2 reveal">The people who run the club.</h2>
+      <div class="sec-aside reveal"><a class="btn btn-line" href="{{ "team/" | relURL }}">Full team and advisors {{ partial "icon.html" "arrow" }}</a></div>
+    </div>
+    <ul class="team" style="margin-top:clamp(48px,8vh,88px)">
+      {{ range hugo.Data.officers }}
+      {{ $p := . }}
+      <li class="person reveal">
+        {{ with $p.photo }}<img class="person-img" src="{{ replace (strings.TrimPrefix "/" . | relURL) " " "%20" }}" alt="" width="112" height="112" loading="lazy" decoding="async" style="object-position: {{ $p.photoPosition | default "center 25%" }}" />{{ end }}
+        <h3>{{ $p.name }}</h3>
+        <ul>{{ with $p.role }}{{ if reflect.IsSlice . }}{{ range . }}<li>{{ . }}</li>{{ end }}{{ else }}<li>{{ . }}</li>{{ end }}{{ end }}</ul>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</section>
+
+{{/* ---------------- /03 BLOG ---------------- */}}
+{{ $posts := where site.RegularPages "Section" "blog" }}
+{{ with $posts }}
+<section class="sec theme-light" id="blog" data-nav="light">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow reveal"><span class="idx">/03</span> Blog</p>
+      <h2 class="h2 reveal">From the lab.</h2>
+      <div class="sec-aside reveal"><a class="btn btn-line" href="{{ "blog/" | relURL }}">All posts {{ partial "icon.html" "arrow" }}</a></div>
+    </div>
+    <ul class="news reveal" style="margin-top:clamp(40px,7vh,72px)">
+      {{ range first 3 $posts.ByDate.Reverse }}
+      <li><a href="{{ .RelPermalink }}"><span class="k">{{ .Date.Format "Jan 2, 2006" }}{{ with .Params.kicker }} · {{ . }}{{ end }}</span><h3>{{ .Title }}</h3>{{ partial "icon.html" "arrow" }}</a></li>
+      {{ end }}
+    </ul>
+  </div>
+</section>
+{{ end }}
+
+{{/* ---------------- /04 SPONSORS ---------------- */}}
+<section class="sec theme-paper" id="sponsors" data-nav="light">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow reveal"><span class="idx">/04</span> Sponsors</p>
+      <h2 class="h2 reveal">Built with our partners.</h2>
+      <p class="lead reveal">Their engineers review our designs and their parts are in our machines.</p>
+    </div>
+    {{ partial "sponsors.html" . }}
+    <div class="sec-foot reveal">
+      {{ with site.Params.contactEmail }}<a class="btn btn-solid" href="mailto:{{ . }}?subject=Sponsoring%20Minnesota%20Nanofabrication">Become a sponsor {{ partial "icon.html" "arrow" }}</a>{{ end }}
+    </div>
+  </div>
+</section>
+
+{{/* ---------------- CLOSING ---------------- */}}
+<section class="sec-tight theme-light" data-nav="light">
+  <div class="wrap">
+    <div class="ctas" style="margin-top:0">
+      {{ with site.Params.discordURL }}<a class="cta-block cta-dark reveal" href="{{ . }}" target="_blank" rel="noopener">Join the club {{ partial "icon.html" "big-arrow" }}</a>{{ end }}
+      {{ with site.Params.contactEmail }}<a class="cta-block cta-grey reveal" href="mailto:{{ . }}?subject=Minnesota%20Nanofabrication">Get in touch {{ partial "icon.html" "big-arrow" }}</a>{{ end }}
+    </div>
+  </div>
+</section>
 {{ end }}

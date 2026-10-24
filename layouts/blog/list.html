@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{ partial "page-hero.html" (dict "page" . "title" "Notes from the lab." "lead" .Params.lead) }}
+<section class="sec theme-light" data-nav="light">
+  <div class="wrap">
+    {{ with .Pages.ByDate.Reverse }}
+    <ul class="news">
+      {{ range . }}
+      <li><a href="{{ .RelPermalink }}">
+        <span class="k">{{ .Date.Format "Jan 2, 2006" }}{{ with .Params.kicker }} · {{ . }}{{ end }}</span>
+        <h3>{{ .Title }}</h3>
+        {{ partial "icon.html" "arrow" }}
+        <p>{{ .Params.description | default (.Summary | plainify | truncate 180) }}</p>
+      </a></li>
+      {{ end }}
+    </ul>
+    {{ else }}
+    <p class="lead">No posts yet.</p>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

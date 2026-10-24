@@ -1,211 +1,35 @@
-{{/* ==================================================================
-     ADVISORS — the people outside the club who advise it.
-
-     NOT "Faculty Advisors" any more. They are not all faculty: the
-     Minnesota Robotics Institute group is staff, and the heading had
-     to stop claiming otherwise before they could be listed.
-
-     Content comes from data/advisors.yaml. Add, remove or reorder
-     people there; nothing in this file needs editing.
-
-     Not a grid. Advisors are few and senior, so each gets a full-width
-     row: a large portrait registered to the same left margin as every
-     other section, name and substance beside it, separated by space
-     rather than by a rule (§2 — a rule only earns its place when two
-     things would otherwise be confused).
-
-     Deleted in revision 2: the section lead, the hairlines between
-     entries, the "FACULTY PAGE ——" mono label with its extending
-     measure (a plain link is enough), and the legacy sr-only #backing
-     anchor — nothing links to it any more.
-
-     GROUPED BY DEPARTMENT. Advisors come from several departments and
-     an undifferentiated list of six hid that. Each person carries a
-     `dept` in data/advisors.yaml and the groups are built from those
-     strings in the order they first appear in the file, so adding a
-     department is a data edit and never a template edit. The group
-     heading is the same light heading the team section uses, at the
-     same size, so the two sections read as one hierarchy.
-
-     Because the heading names the department, `role` must not repeat
-     it — "Faculty Advisor — Electrical & Computer Engineering" under
-     an "Electrical & Computer Engineering" heading says it twice
-     (§2). The roles in the data file were trimmed to the title alone.
-
-     One group and no `dept` on anyone renders exactly as before: a
-     flat list, no heading.
-
-     GRADUATE STUDENT MENTORS are not committed yet, so they are not
-     shown. The subsection below renders itself as soon as a
-     data/mentors.yaml exists and has at least one entry — see the
-     comment above it for the fields it expects.
-
-     Stylesheet: static/css/people.css (design-language §9).
-     ================================================================== */}}
-
+{{/* ==============================================================
+     ADVISORS, grouped by department in the order they first appear
+     in data/advisors.yaml. Fields: name, dept, role, bio, link,
+     linkLabel, photo, photoPosition. README, "Advisors".
+     ============================================================== */}}
 {{ $advisors := default slice hugo.Data.advisors }}
-{{ $mentors  := default slice hugo.Data.mentors }}
-
-{{/* ---------- Group by department, in file order ----------------
-     Two passes rather than `where`, because `where` cannot match the
-     people who have no `dept` at all — they would silently vanish
-     from the page. Here they collect under the empty label, which
-     renders without a heading. Nobody is dropped. */}}
 {{ $depts := slice }}
-{{ range $advisors }}
-  {{ $d := .dept | default "" }}
-  {{ if not (in $depts $d) }}{{ $depts = $depts | append $d }}{{ end }}
-{{ end }}
-
-{{ $groups := slice }}
+{{ range $advisors }}{{ $d := .dept | default "" }}{{ if not (in $depts $d) }}{{ $depts = $depts | append $d }}{{ end }}{{ end }}
 {{ range $depts }}
-  {{ $d := . }}
-  {{ $people := slice }}
-  {{ range $advisors }}
-    {{ if eq (.dept | default "") $d }}{{ $people = $people | append . }}{{ end }}
+{{ $d := . }}
+{{ with $d }}<h3 class="team-group">{{ . }}</h3>{{ end }}
+<ul class="advisors">
+  {{ range where $advisors "dept" $d }}
+  {{ $a := . }}
+  <li class="advisor reveal">
+    {{ with $a.photo }}
+    <img class="person-img" src="{{ replace (strings.TrimPrefix "/" . | relURL) " " "%20" }}" alt="" width="96" height="96" loading="lazy" decoding="async" style="object-position: {{ $a.photoPosition | default "center 15%" }}" />
+    {{ else }}
+    {{ $w := split ($a.name | strings.TrimSpace) " " }}
+    <span class="person-initials" aria-hidden="true">{{ upper (substr (index $w 0) 0 1) }}{{ if gt (len $w) 1 }}{{ upper (substr (index $w (sub (len $w) 1)) 0 1) }}{{ end }}</span>
+    {{ end }}
+    <div>
+      <h4>{{ $a.name }}</h4>
+      {{ with $a.role }}<p class="role">{{ . }}</p>{{ end }}
+      {{ with $a.bio }}<p class="bio">{{ . }}</p>{{ end }}
+      {{ with $a.link }}
+      {{ $label := cond (in (lower .) "linkedin.com") "LinkedIn" "Faculty page" }}
+      {{ with $a.linkLabel }}{{ $label = . }}{{ end }}
+      <a class="link" href="{{ . }}" target="_blank" rel="noopener">{{ $label }} ↗</a>
+      {{ end }}
+    </div>
+  </li>
   {{ end }}
-  {{ $groups = $groups | append (dict "label" $d "people" $people) }}
-{{ end }}
-
-{{ if or $advisors $mentors }}
-<section id="advisors" class="bg-paper">
-  <div class="mx-auto max-w-6xl px-6 py-28 lg:py-40">
-
-    {{ partial "section-head.html" (dict "title" "Advisors") }}
-
-    {{ range $gi, $g := $groups }}
-    <div class="{{ if eq $gi 0 }}mt-14 sm:mt-20{{ else }}mt-20 sm:mt-28{{ end }}">
-
-      {{/* Same light group heading as the team section: between the
-           advisor names (2rem) and the section heading, no rule and
-           no panel (§2, §3). Omitted for the unlabelled group. */}}
-      {{ with $g.label }}
-      <h3 class="font-display font-semibold text-[1.625rem] sm:text-[1.75rem] leading-[1.1] tracking-tight">{{ . }}</h3>
-      {{ end }}
-
-    <ul class="advisor-list {{ if $g.label }}mt-10 sm:mt-12{{ end }} list-none p-0">
-      {{ range $g.people }}
-      {{ $a := . }}
-
-      {{/* Normalise the photo path: drop any leading slash, run it
-           through relURL so it resolves under the /nanofab_web/
-           baseURL, then escape spaces in filenames. */}}
-      {{ $src := "" }}
-      {{ with $a.photo }}
-        {{ $src = replace (strings.TrimPrefix "/" . | relURL) " " "%20" }}
-      {{ end }}
-
-      <li class="advisor">
-        <div class="advisor-portrait">
-          {{ if $src }}
-          <img src="{{ $src }}"
-               alt="{{ $a.name }}{{ with $a.role }}, {{ . }}{{ end }}"
-               loading="lazy" decoding="async"
-               class="advisor-img"
-               style="object-position: {{ $a.photoPosition | default "center 15%" }}" />
-          {{ else }}
-          {{ $words := split ($a.name | strings.TrimSpace) " " }}
-          {{ $initials := substr (index $words 0) 0 1 }}
-          {{ if gt (len $words) 1 }}
-            {{ $initials = printf "%s%s" $initials (substr (index $words (sub (len $words) 1)) 0 1) }}
-          {{ end }}
-          <div class="advisor-img advisor-img--blank border border-line bg-surface">
-            <span class="person-initials font-display" aria-hidden="true">{{ upper $initials }}</span>
-          </div>
-          {{ end }}
-        </div>
-
-        <div class="advisor-body min-w-0">
-          {{/* h4, under the department's h3 — same nesting the team
-               section uses, so the outline of the page stays correct
-               for a screen reader. */}}
-          <h4 class="font-display font-semibold text-[1.75rem] sm:text-[2rem] leading-[1.1] tracking-tight">
-            {{ $a.name }}
-          </h4>
-
-          {{ with $a.role }}
-          <p class="text-[1.0625rem] leading-snug text-muted mt-3 max-w-md">{{ . }}</p>
-          {{ end }}
-
-          {{/* The bio is a fragment naming the research, nothing more.
-               Rewritten in data/advisors.yaml — see §2. */}}
-          {{ with $a.bio }}
-          <p class="text-[1.1875rem] leading-relaxed mt-5 max-w-2xl">{{ . }}</p>
-          {{ end }}
-
-          {{ with $a.link }}
-          {{/* "LinkedIn" for linkedin.com links, "Faculty page"
-               otherwise; linkLabel in data/advisors.yaml overrides.
-
-               SET linkLabel FOR ANYONE WHO IS NOT FACULTY. The
-               default calls every non-LinkedIn link a faculty page,
-               which is wrong for the Minnesota Robotics Institute
-               staff and would be wrong for a lab manager or a
-               graduate mentor too. */}}
-          {{ $label := cond (in (lower .) "linkedin.com") "LinkedIn" "Faculty page" }}
-          {{ with $a.linkLabel }}{{ $label = . }}{{ end }}
-          <a href="{{ . }}" rel="noopener"
-             class="advisor-link text-[1.0625rem] text-maroon mt-5 inline-block">{{ $label }}</a>
-          {{ end }}
-        </div>
-      </li>
-      {{ end }}
-    </ul>
-    </div>
-    {{ end }}
-
-    {{/* ---------- GRADUATE STUDENT MENTORS ------------------------------
-         Dormant. TO TURN ON: create data/mentors.yaml with one block
-         per person —
-
-           - name: Jane Doe
-             role: "PhD candidate — Electrical & Computer Engineering"
-             focus: "Thin-film deposition"     # optional, one line
-             photo: "images/advisors/jane.jpg" # optional, initials if blank
-             photoPosition: "center 15%"       # optional
-
-         That is the whole switch: this block renders as soon as the
-         file exists and has at least one entry, and disappears again
-         if it is emptied. Mentor photos go in static/images/advisors/.
-         ---------------------------------------------------------------- */}}
-    {{ with $mentors }}
-    <div class="mt-28 lg:mt-40">
-      <h3 class="font-display font-semibold text-[1.5rem] sm:text-[2rem] leading-[1.1] tracking-tight">Graduate mentors</h3>
-
-      <ul class="mentor-grid mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14 list-none p-0">
-        {{ range . }}
-        {{ $m := . }}
-        {{ $src := "" }}
-        {{ with $m.photo }}
-          {{ $src = replace (strings.TrimPrefix "/" . | relURL) " " "%20" }}
-        {{ end }}
-        <li class="mentor">
-          {{ if $src }}
-          <img src="{{ $src }}"
-               alt="{{ $m.name }}{{ with $m.role }}, {{ . }}{{ end }}"
-               loading="lazy" decoding="async"
-               class="mentor-img"
-               style="object-position: {{ $m.photoPosition | default "center 15%" }}" />
-          {{ else }}
-          {{ $words := split ($m.name | strings.TrimSpace) " " }}
-          {{ $initials := substr (index $words 0) 0 1 }}
-          {{ if gt (len $words) 1 }}
-            {{ $initials = printf "%s%s" $initials (substr (index $words (sub (len $words) 1)) 0 1) }}
-          {{ end }}
-          <div class="mentor-img mentor-img--blank border border-line bg-surface">
-            <span class="person-initials font-display" aria-hidden="true">{{ upper $initials }}</span>
-          </div>
-          {{ end }}
-
-          <h4 class="font-display font-semibold text-[1.375rem] leading-[1.1] tracking-tight mt-5">{{ $m.name }}</h4>
-          {{ with $m.role }}<p class="text-[1.0625rem] leading-snug mt-2">{{ . }}</p>{{ end }}
-          {{ with $m.focus }}<p class="text-[1.0625rem] leading-snug text-muted mt-1">{{ . }}</p>{{ end }}
-        </li>
-        {{ end }}
-      </ul>
-    </div>
-    {{ end }}
-
-  </div>
-</section>
+</ul>
 {{ end }}

@@ -1,7 +1,6 @@
 # ===================================================================
-# SYSTEM & SUBSYSTEM LEADS — shown under the officers in the "Team"
-# section on the homepage, in their own "System & Subsystem Leads"
-# subsection.
+# SYSTEM & SUBSYSTEM LEADS — shown on the /team/ page, grouped by the
+# band of the machine they lead, and as "Lead" on each machine card.
 #
 # Same fields as data/officers.yaml:
 #   name   required — the person’s name
