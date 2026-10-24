@@ -1,269 +1,103 @@
-# The live address. GitHub Pages also sets this when it builds, but
-# keeping it right here means local builds, the sitemap, and link
-# previews all match the real site. Keep the trailing slash.
+# =====================================================================
+# Minnesota Nanofabrication Club: site settings.
+# Most routine edits (people, sponsors, machines, blog posts) do NOT
+# happen here. See README.md, "Where everything lives".
+# =====================================================================
+
+# The live address. Keep the trailing slash. GitHub Actions overrides
+# this with the real Pages URL when it builds.
 baseURL = "https://minnesota-nanofabrication-club.github.io/nanofab_web/"
 locale = "en-US"
 
-# THE BRAND NAME. This is one string with three jobs: og:site_name
-# (what Discord/LinkedIn/iMessage print above a shared link), the
-# homepage's og:title, and the "name" of the Organization in the
-# structured data Google reads. All three want the name people
-# actually recognise, so it has to match the wordmark in the header —
-# "Minnesota Nanofabrication" — plus the one word that tells a
-# stranger what kind of thing this is. It is also the real name of the
-# org everywhere else: github.com/minnesota-nanofabrication-club,
-# @minnesota_nanofab_club, the LinkedIn page.
-#
-# Keep it SHORT. Google only accepts a site name it can print beside
-# the result, and it quietly drops long ones; "… at the University of
-# Minnesota" was long enough to lose that. The University association
-# is carried instead by the <title> tag (built from shortTitle below,
-# which appends "— University of Minnesota"), by params.tagline, by
-# params.description, and by the footer.
-#
-# It should NOT read "<club> at the University of Minnesota": we are a
-# Registered Student Organization and independent from the University
-# (see rsoDisclaimer), so the org's own name does not borrow theirs.
+# The club's name, spelled one way everywhere: <title>, link previews,
+# structured data. It must not start with "University of Minnesota",
+# "UMN" or "Gopher" (README, "UMN branding rules").
 title = "Minnesota Nanofabrication Club"
 
-# Writes public/robots.txt from layouts/robots.txt on every build. The
-# file says "crawl everything" and points at the sitemap — see the
-# comments in that template for the one GitHub Pages catch.
 enableRobotsTXT = true
 
-# This site doesn't use tags or categories as blog-style taxonomies
-# (machines are grouped via data/categories.yaml instead), so turn the
-# empty /tags/ and /categories/ pages off.
+# No tag or category pages.
 disableKinds = ["taxonomy", "term"]
 
-# The homepage is also rendered as JSON, which produces /index.json —
-# the search index. The template is layouts/index.json.
-[outputs]
-  home = ["HTML", "JSON"]
-
-# ------------------------------------------------------------------
-# SITEMAP — public/sitemap.xml, the list of pages we hand to Google.
-# Hugo builds it for us; there is no template to maintain.
-#
-# These two values are Hugo's defaults, written out so nobody
-# "helpfully" fills them in later. Both are deliberately switched off:
-#
-#   changefreq — a hint like "weekly". Google announced in 2023 that
-#     it ignores it outright, and so does Bing. "" omits the tag.
-#
-#   priority — a 0.0–1.0 weight. ALSO ignored. It never meant
-#     "rank this higher"; at most it suggested a crawl order WITHIN
-#     one site, and it is dead either way. So no, the homepage does
-#     not need priority 1.0 to outrank the machine pages — it outranks
-#     them because it is the page everything links to. -1 omits the
-#     tag.
-#
-# Writing tags every crawler ignores is pure noise, so we emit neither
-# and the sitemap stays a clean list of <loc> entries.
-#
-# <lastmod> is also absent, because nothing in content/ carries a
-# date. The usual fix is enableGitInfo = true, which dates each page
-# from its last commit — but .github/workflows/deploy.yml checks out
-# with actions/checkout's default shallow clone (depth 1), so every
-# page would be stamped with the same date, which is worse than no
-# date at all. Turn it on only together with `fetch-depth: 0` there.
-#
-# Drafts never appear: Hugo excludes them from the build entirely,
-# and content/machines/_index.md is `render: never`, so /machines/
-# stays out too. 404.html is not a sitemap entry and carries
-# noindex (set in layouts/partials/head.html).
-# ------------------------------------------------------------------
 [sitemap]
   changefreq = ""
   priority = -1
 
-# canonifyURLs is deliberately OFF (its default). It is a legacy
-# option that rewrites every relative link in your *content* to an
-# absolute one. This site does not need it: the templates already run
-# paths through relURL/absURL, which is what keeps the /nanofab_web/
-# subpath correct, and canonifyURLs would only make local previews
-# point at the live domain. Taxonomies are off too — see disableKinds
-# above. Leave both alone.
+# Blog posts live at /blog/<file-name>/.
+[permalinks]
+  blog = "/blog/:contentbasename/"
 
-# ------------------------------------------------------------------
-# Site-wide identity: things that stay the same on every page.
-# EDIT HERE to change contact links across the entire site at once.
-# ------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# THE TOP NAVIGATION. Same list in the header, the mobile menu and the
+# footer. `weight` sets the order. External links (the docs) open in a
+# new tab and get a small arrow automatically.
+# ---------------------------------------------------------------------
+[menus]
+  [[menus.main]]
+    name = "Machines"
+    pageRef = "/machines"
+    weight = 10
+  [[menus.main]]
+    name = "Team"
+    pageRef = "/team"
+    weight = 20
+  [[menus.main]]
+    name = "Blog"
+    pageRef = "/blog"
+    weight = 30
+  [[menus.main]]
+    name = "Sponsors"
+    url = "/#sponsors"
+    weight = 40
+
 [params]
   tagline = "University of Minnesota, Twin Cities"
-
-  # The brand as it appears in the <title> tag — the blue link in
-  # Google's results. layouts/partials/head.html builds:
-  #   homepage:      "<shortTitle> — University of Minnesota"
-  #   machine pages: "Tube Furnace — <shortTitle>, UMN"
-  # so this string is what a searcher sees 20 times over, and it has
-  # to be the name they typed. "Nanofabrication Club" alone was not:
-  # it dropped "Minnesota", the first word of our own wordmark and of
-  # every query that finds us. It is also used as the Organization's
-  # alternateName in the structured data, and in the fallback alt text
-  # for the link-preview image.
-  #
-  # Keeping it identical to `title` above is intentional — one brand,
-  # spelled one way, everywhere. Mind the length if you change it: the
-  # longest machine title ("Wafer Stage Alignment Firmware") plus this
-  # suffix comes to 68 characters, and Google starts truncating near
-  # 60. The brand sits at the END of those titles, so what gets cut is
-  # the part the reader can already guess.
   shortTitle = "Minnesota Nanofabrication Club"
 
-  # ---------------- SEO (README section 4.19) ----------------
-  # What Google shows under the homepage's title. Aim for 120–155
-  # characters; anything longer gets cut off with "…".
-  #
-  # The old version was 85 characters — barely half the space Google
-  # gives you, and it spent none of it saying what we actually build.
-  # This one fills the line and front-loads the words people search:
-  # "nanofabrication", then "University of Minnesota", then
-  # "semiconductor fab", then the four process areas the machines are
-  # grouped into. Those four are the industry words a searcher would
-  # use, not our subsystem labels — the site calls them Patterning,
-  # Doping, Thin Film Deposition and Wafer Characterization
-  # (data/bands.yaml), which nobody types into Google.
-  # Every clause is a fact about the club,
-  # which is the only way a description earns the click — a list of
-  # keywords reads as spam and Google will replace it with its own
-  # sentence lifted from the page.
-  #
-  # head.html truncates at a word boundary once this passes 160
-  # characters, so stay under that. This is 156.
-  description = "Nanofabrication at the University of Minnesota — a student club building a semiconductor fab, machine by machine: lithography, thin films, doping, metrology."
-  # Picture shown when a page is shared on LinkedIn, Discord, iMessage,
-  # etc. Machine pages use their own Overview diagram instead.
-  # Best at about 1200 x 630 or larger.
+  # What Google shows under the homepage title. Stay under 160 characters.
+  description = "Nanofabrication at the University of Minnesota: a student club building a semiconductor fab, machine by machine. Lithography, thin films, doping, metrology."
+
+  # Picture used when a page is shared (Discord, LinkedIn, iMessage).
   ogImage = "/images/lab/nf-lab-web.jpg"
 
-  # The photograph that fills the homepage. This is meant to be
-  # replaced as the lab changes — drop a new file in
-  # static/images/lab/ and point this at it. Nothing else to edit.
-  # Shoot it wide and a little dark; light type sits on the left.
+  # The homepage hero photograph. Replace the file to change it.
   heroImage = "/images/lab/nf-lab-web.jpg"
-  # Google Search Console verification code: just the code inside
-  # content="…" from the tag Google gives you. Leave "" until then.
+
+  # The one-line headline on the homepage hero.
+  heroTitle = "Build the fab."
+  heroLead = "We are engineering undergraduates at the University of Minnesota building a nanofabrication facility from scratch. Every machine is designed, assembled, tested and documented by students."
+
   googleSiteVerification = ""
+
+  # ---------------- Links ----------------
   discordURL = "https://discord.gg/G9T6bk84w"
   githubURL = "https://github.com/minnesota-nanofabrication-club"
-  linkedinURL =  "https://www.linkedin.com/company/minnesota-nanofabrication-club/"
+  linkedinURL = "https://www.linkedin.com/company/minnesota-nanofabrication-club/"
   instagramURL = "https://www.instagram.com/minnesota_nanofab_club/?hl=en"
   contactEmail = "jin00404@umn.edu"
-  docsURL = "https://minnesota-nanofabrication-club.github.io/club_website/"
 
-  # ----------------------------------------------------------------
-  # MACHINE DOCUMENTATION SHEET — CURRENTLY OFF
-  #
-  # The machine pages can pull a timeline, bill of materials,
-  # contributors, and reference list out of one Google Sheet. That
-  # whole system is built and dormant: the page sections only render
-  # when there's data, and there is none, so nothing shows.
-  #
-  # TO TURN IT ON:
-  #   1. Set up the Sheet — see
-  #      scripts/sheet-template/HOW-TO-SET-UP-THE-SHEET.txt
-  #   2. Uncomment the line below and paste in the Sheet's ID.
-  #   3. Uncomment the two sync steps and the "schedule" block in
-  #      .github/workflows/deploy.yml.
-  # See README section 4.15.
-  # ----------------------------------------------------------------
-  # docsSheetId = ""
+  # ---------------- The documentation site ----------------
+  # The separate mdBook site (repository: nanofab_docs). The "Docs"
+  # link in the navigation points here, and every machine card links
+  # to  docsURL + docsMachinePath + <machine file name> + ".html".
+  # A machine can override its link with `docs:` in its front matter.
+  docsURL = "https://minnesota-nanofabrication-club.github.io/nanofab_docs/"
+  docsMachinePath = "machines/"
 
-  # ----------------------------------------------------------------
-  # CLUB LOGO
-  # Drop your logo file in static/images/logo/ and put its path here.
-  # Anything that works in a browser is fine (.svg is sharpest, .png
-  # with a transparent background is the next best thing).
-  # Leave it as "" and the site falls back to the "nF" square.
-  # A square-ish logo looks best; it renders at 32px in the header.
-  # ----------------------------------------------------------------
+  # ---------------- Logo ----------------
   logo = "/images/logo/mnfc-wafer-logo.png"
-  logoAlt = "Nanofabrication Club wafer logo"
+  logoAlt = "Minnesota Nanofabrication Club wafer logo"
 
-  # ----------------------------------------------------------------
-  # University of Minnesota links. These are what tie the site to the
-  # university — they show up in the top bar and the footer.
-  # ----------------------------------------------------------------
   [params.umn]
     universityURL = "https://umn.edu"
     universityName = "University of Minnesota"
     collegeURL = "https://cse.umn.edu"
     collegeName = "College of Science and Engineering"
-    # Your listing in Gopher Link, UMN's student org directory. Swap in
-    # your real org URL once the club is registered.
-    gopherLinkURL = "https://gopherlink.umn.edu"
-
-    # --------------------------------------------------------------
-    # REQUIRED BY THE UNIVERSITY. Every registered student org has to
-    # carry this exact sentence on its public platforms. Don't reword
-    # it. See README section 9 ("UMN branding rules").
-    # --------------------------------------------------------------
+    # REQUIRED BY THE UNIVERSITY. Do not reword. README, "UMN branding rules".
     rsoDisclaimer = "This group is a Registered Student Organization and is independent from the University of Minnesota."
-
-    # --------------------------------------------------------------
-    # The official "Block M RSO" mark — the ONLY University trademark
-    # a registered student org may use. It has to be requested; it is
-    # NOT in the public logo download.
-    #
-    # WHERE IT GOES: the very bottom of the page, on its own, next to
-    # the disclaimer and away from the club logo and name. That
-    # placement is required, not a design choice — see README 9.
-    # Drop the file in static/images/logo/ and put its path here.
-    # --------------------------------------------------------------
+    # The official Block M RSO mark, once the club has the file. It renders
+    # at the very bottom of the footer, beside the disclaimer, as required.
     rsoMark = ""
-
-  # ----------------------------------------------------------------
-  # Color tokens used by Tailwind's inline config in
-  # layouts/partials/head.html. Change a hex value here and it updates
-  # everywhere that color is used.
-  #
-  # maroon + gold are the official University of Minnesota brand
-  # colors (PMS 202 and PMS 116). Keep them as-is unless the
-  # university updates its brand guide.
-  #
-  # "muted" is the grey used for body copy. It's deliberately dark
-  # (7.9:1 against paper) so small text stays readable — don't
-  # lighten it without checking contrast.
-  # ----------------------------------------------------------------
-  [params.colors]
-    paper = "#EDE4D7"
-    surface = "#F7F4EE"
-    ink = "#14181C"
-    line = "#D7CEC1"
-    muted = "#474D49"
-    faint = "#6B716C"
-    maroon = "#7A0019"
-    maroonDark = "#5B0013"
-    gold = "#FFCC33"
-    goldDeep = "#8A6400"
-    signalGreen = "#246B43"
-    signalAmber = "#9C5F0A"
-    blueprint = "#1F4E8C"
-
-    # ---------------- The dark ground ----------------
-    # Used by the hero and the full-screen menu only. The rest of the
-    # site stays on paper. The contrast between an instrument-dark
-    # hero and warm paper below is deliberate — it's what keeps the
-    # "futuristic" from turning into another dark-mode SaaS page.
-    #
-    # voidLine/voidEdge are 8-digit hex (last two digits = alpha), so
-    # hairlines sit *on* the photograph without punching through it.
-    void = "#0A0C0D"
-    voidSoft = "#15181A"
-    voidMuted = "#8E9794"
-    voidLine = "#FFFFFF1A"
-    voidEdge = "#FFFFFF33"
-
-    # Sampled straight out of the club wafer logo. This is the
-    # secondary accent: maroon and gold tie the site to the
-    # University, violet ties it to our own mark. Used sparingly —
-    # Gen 2, subsystem numbers, text selection. Don't let it take
-    # over; maroon stays the primary. 11.5:1 on paper, so it's safe
-    # for small text.
-    violet = "#42245F"
-    violetSoft = "#F1ECF5"
-
 
 [markup.goldmark.renderer]
   unsafe = true

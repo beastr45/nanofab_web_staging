@@ -1,26 +1,13 @@
-{{/* Shown for any address on the site that doesn't exist, instead of
-     GitHub's generic error page. Hugo builds it as 404.html, which
-     GitHub Pages serves automatically. It's marked "noindex" in
-     head.html so it never shows up in Google. README section 4.19. */}}
 {{ define "main" }}
-<section class="relative overflow-hidden border-b border-line">
-  <div class="absolute inset-0 bg-grid-fine pointer-events-none"></div>
-  <div class="relative mx-auto max-w-3xl px-6 py-24 sm:py-32 text-center">
-    <p class="font-mono text-sm uppercase tracking-widest text-maroon">Error 404</p>
-    <h1 class="font-display font-bold text-4xl sm:text-5xl tracking-tight mt-4 leading-[1.08]">This page doesn&rsquo;t exist</h1>
-    <p class="mt-5 text-lg text-muted leading-relaxed">
-      The link may be old, or the page may have moved. Everything the club
-      is building is on The Fab page.
-    </p>
-    <div class="mt-9 flex flex-wrap justify-center gap-3">
-      <a href="{{ strings.TrimPrefix "/" ("/") | relURL }}"
-         class="inline-flex items-center gap-2 rounded-md bg-maroon text-white font-semibold px-6 py-3.5 hover:bg-maroon-dark transition-colors">
-        Go to the homepage
-      </a>
-      <a href="{{ strings.TrimPrefix "/" ("/machines/") | relURL }}"
-         class="inline-flex items-center gap-2 rounded-md border-2 border-ink/30 bg-surface px-6 py-3.5 font-semibold hover:border-ink hover:bg-paper transition-colors">
-        Explore the fab <span aria-hidden="true">→</span>
-      </a>
+<section class="page-hero theme-dark" data-nav="dark" id="top" style="min-height:100vh">
+  <div class="page-hero-bg" aria-hidden="true"><div class="grain"></div></div>
+  <div class="wrap">
+    <p class="eyebrow">Error 404</p>
+    <h1 class="page-title">This page doesn&rsquo;t exist.</h1>
+    <p class="page-lead">The link may be old. Machines no longer have pages of their own: every machine is now a card on one page.</p>
+    <div class="hero-cta" style="margin-top:36px">
+      <a class="btn btn-solid" href="{{ "" | relURL }}">Home {{ partial "icon.html" "arrow" }}</a>
+      <a class="btn btn-line" href="{{ "machines/" | relURL }}">All machines {{ partial "icon.html" "arrow" }}</a>
     </div>
   </div>
 </section>

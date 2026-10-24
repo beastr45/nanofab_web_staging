@@ -1,0 +1,12 @@
+{
+  "name": "nanofab-web",
+  "private": true,
+  "description": "Minnesota Nanofabrication Club website (Hugo). Node is only needed to rebuild static/css/site.css.",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i tailwind-input.css -o static/css/site.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i tailwind-input.css -o static/css/site.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

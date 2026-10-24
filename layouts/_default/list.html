@@ -1,0 +1,11 @@
+{{ define "main" }}
+{{ partial "page-hero.html" (dict "page" . "lead" .Params.lead) }}
+<section class="sec theme-light" data-nav="light">
+  <div class="wrap">
+    {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+    <ul class="news" style="margin-top:48px">
+      {{ range .Pages }}<li><a href="{{ .RelPermalink }}"><span class="k">{{ .Section }}</span><h3>{{ .Title }}</h3>{{ partial "icon.html" "arrow" }}</a></li>{{ end }}
+    </ul>
+  </div>
+</section>
+{{ end }}

@@ -1,0 +1,6 @@
+{{ define "main" }}
+{{ partial "page-hero.html" (dict "page" . "lead" .Params.description) }}
+<section class="sec theme-light" data-nav="light">
+  <div class="wrap"><article class="prose">{{ .Content }}</article></div>
+</section>
+{{ end }}

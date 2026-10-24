@@ -1,68 +1,26 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 {{/* ==============================================================
-     SEO: page title, description, link previews, structured data.
-     The site-wide settings are in hugo.toml under [params]
-     (description, ogImage, googleSiteVerification).
-     How it all works: README section 4.19.
+     <head>: title, description, link previews, structured data,
+     fonts and the stylesheet. Site-wide values come from hugo.toml.
+     A page can override its title with `seoTitle:` and its
+     description with `description:` in front matter.
      ============================================================== */}}
 {{ $site := .Site }}
-{{ $slug := "" }}{{ with .File }}{{ $slug = .ContentBaseName }}{{ end }}
-{{ $isMachine := and .IsPage (eq .Section "machines") }}
-{{ $overview := dict }}
-{{ if and $isMachine $slug }}{{ $overview = index (default dict hugo.Data.overviews) $slug | default dict }}{{ end }}
+{{ $isPost := and .IsPage (eq .Section "blog") }}
 
-{{/* ---------- Language tag ----------
-     hugo.toml sets `locale = "en-us"`. The canonical way to write that
-     is "en-US" — language lowercase, region UPPERCASE. Parsers don't
-     care about the case, but Facebook's and Google's validators both
-     expect the canonical spelling, so normalise it once here and reuse
-     it below for og:locale ("en_US", underscore) and for schema.org's
-     inLanguage ("en-US", hyphen). Nothing is hard-coded, so changing
-     `locale` in hugo.toml updates every tag at once.
-     Note: <html lang> itself is set in layouts/_default/baseof.html. */}}
-{{ $lang := "en-US" }}
-{{ with $site.Language.Locale }}
-  {{ $parts := split (replace . "_" "-") "-" }}
-  {{ $lang = index $parts 0 }}
-  {{ if gt (len $parts) 1 }}{{ $lang = printf "%s-%s" (index $parts 0) (upper (index $parts 1)) }}{{ end }}
-{{ end }}
-
-{{/* ---------- Title (what Google shows as the blue link) ----------
-     Kept under ~60 characters so Google doesn't cut it off.
-       Homepage:  Nanofabrication Club — University of Minnesota
-       Others:    Tube Furnace — Nanofabrication Club, UMN
-     A page can override it with seoTitle: "…" in its front matter. */}}
-{{/* Google shows about 60 characters and truncates the rest. The brand
-     sits at the TAIL of a machine title, so an over-long one loses
-     exactly the part a reader could have inferred. Four pages ran
-     61-68 characters ("Wafer Stage Alignment Firmware — …" was the
-     worst), so the suffix steps down as the page name grows:
-       short name  ->  Name — Minnesota Nanofabrication Club, UMN
-       long name   ->  Name — Minnesota Nanofabrication
-       very long   ->  Name — MN Nanofab
-     The page's own name is never cut; it is the part that earns the
-     click. */}}
-{{ $title := printf "%s — %s, UMN" .Title $site.Params.shortTitle }}
-{{ if gt (len $title) 60 }}{{ $title = printf "%s — Minnesota Nanofabrication" .Title }}{{ end }}
+{{/* ---------- Title (keep under ~60 characters) ---------- */}}
+{{ $title := printf "%s — %s" .Title $site.Params.shortTitle }}
 {{ if gt (len $title) 60 }}{{ $title = printf "%s — MN Nanofab" .Title }}{{ end }}
 {{ if .IsHome }}{{ $title = printf "%s — University of Minnesota" $site.Params.shortTitle }}{{ end }}
-{{ if eq .Kind "404" }}{{ $title = printf "Page not found — %s, UMN" $site.Params.shortTitle }}{{ end }}
+{{ if eq .Kind "404" }}{{ $title = printf "Page not found — %s" $site.Params.shortTitle }}{{ end }}
 {{ with .Params.seoTitle }}{{ $title = . }}{{ end }}
 <title>{{ $title }}</title>
 
-{{/* ---------- Description (the grey text under the link) ----------
-     First match wins:
-       1. description: "…" in the page's front matter
-       2. machine pages: the start of their Overview intro
-       3. the page's summary or subhead
-       4. the site-wide description in hugo.toml
-     Cut to ~155 characters at a word boundary. */}}
-{{ $desc := "" }}
-{{ with .Params.description }}{{ $desc = . }}{{ end }}
-{{ if and (not $desc) $overview.intro }}{{ $desc = $overview.intro | markdownify | plainify | htmlUnescape }}{{ end }}
-{{ if and (not $desc) (not .IsHome) }}{{ $desc = .Params.summary | default .Params.subhead | default "" }}{{ end }}
+{{/* ---------- Description ---------- */}}
+{{ $desc := .Params.description | default "" }}
+{{ if and (not $desc) (not .IsHome) }}{{ $desc = .Params.summary | default "" }}{{ end }}
+{{ if and (not $desc) $isPost }}{{ $desc = .Summary | plainify | htmlUnescape }}{{ end }}
 {{ if not $desc }}{{ $desc = $site.Params.description }}{{ end }}
 {{ $desc = replaceRE `\s+` " " $desc | strings.TrimSpace }}
 {{ if gt (len $desc) 160 }}{{ $desc = truncate 155 $desc | plainify | htmlUnescape }}{{ end }}
@@ -72,431 +30,59 @@
 <meta name="robots" content="noindex" />
 {{ else }}
 <link rel="canonical" href="{{ .Permalink }}" />
-{{/* ---------- Crawler permissions ----------
-     "index, follow" is already the default; saying it costs nothing and
-     makes the intent obvious to the next person reading this file.
-     The part that actually earns its place is max-image-preview:large,
-     which lets Google show the lab photo or a machine's architecture
-     diagram full-width beside the result instead of a thumbnail — the
-     single biggest visual difference a <head> tag can make to how this
-     site looks in search. max-snippet:-1 removes the length cap on the
-     grey text. Both are opt-in: without them Google picks for you. */}}
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 {{ end }}
+<meta name="theme-color" content="#060607" />
 
-{{/* ---------- "Last updated", for structured data only ----------
-     Machine pages carry `documentationUpdated: "Sept, 2026"` in their
-     front matter. That is a sentence written for a human, not a date,
-     and schema.org's dateModified needs ISO 8601 (2026-09-14). So we
-     convert what we safely can and emit NOTHING when we can't — a
-     wrong date in structured data is worse than no date at all.
-
-     Why not Hugo's .Lastmod? Because no page sets `date` or `lastmod`
-     and enableGitInfo is off, so Hugo reports the zero time
-     (0001-01-01) for every page. Publishing that would be a lie.
-
-     Understood: "2026-09-14", "2026-09", "Sept, 2026", "September 2026",
-     "Updated March 2026" — a month name anywhere in the string, in full
-     or abbreviated, plus a four-digit year.
-
-     A month-and-year string becomes "2026-09", which is legal ISO 8601
-     at reduced precision — we do NOT invent a day of the month we were
-     never told. Anything with no month in it ("Spring 2026", "soon") is
-     skipped silently and the page simply has no dateModified.
-
-     The month pattern spells out the whole name of every month rather
-     than just testing for a three-letter prefix, which matters: a bare
-     `mar` test would read "Marked complete, 2026" as March. Each
-     alternative has to end at a word boundary, so only a real month
-     name matches, and the first three letters of whatever matched are
-     then looked up in the table. */}}
-{{ $modified := "" }}
-{{ with .Params.documentationUpdated }}
-  {{ $raw := lower (printf "%v" .) }}
-  {{/* Already a machine-readable date? Take it as it stands. */}}
-  {{ with findRE `^[0-9]{4}-[0-9]{2}(-[0-9]{2})?` $raw 1 }}{{ $modified = index . 0 }}{{ end }}
-  {{ if not $modified }}
-    {{ $months := dict "jan" "01" "feb" "02" "mar" "03" "apr" "04" "may" "05" "jun" "06" "jul" "07" "aug" "08" "sep" "09" "oct" "10" "nov" "11" "dec" "12" }}
-    {{ $y := "" }}{{ with findRE `\b(19|20)[0-9]{2}\b` $raw 1 }}{{ $y = index . 0 }}{{ end }}
-    {{ $m := "" }}
-    {{ with findRE `\b(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)\b` $raw 1 }}
-      {{ $m = index $months (substr (index . 0) 0 3) | default "" }}
-    {{ end }}
-    {{ if and $y $m }}{{ $modified = printf "%s-%s" $y $m }}{{ end }}
-  {{ end }}
-{{ end }}
-
-{{/* ---------- Link previews (LinkedIn, Discord, iMessage, Slack…) ----------
-     Picture, in order of preference: a machine's Overview hero diagram,
-     then its first Overview section image, then its design diagrams,
-     then its photos, then the site-wide ogImage from hugo.toml, and as
-     a last resort the club logo.
-
-     Each candidate is checked against the file actually sitting in
-     static/ before it wins. That matters because a mistyped path in a
-     .yaml file would otherwise hand LinkedIn a 404 and the page would
-     share with a blank grey box — the failure nobody notices, because
-     the page itself still looks fine. Missing files now just fall
-     through to the next candidate. */}}
-{{ $cands := slice }}
-{{ with $overview.hero }}{{ $h := . }}{{ with $h.src }}{{ $cands = $cands | append (dict "src" . "alt" (default "" $h.caption)) }}{{ end }}{{ end }}
-{{ range $overview.sections }}{{ $sec := . }}{{ with $sec.image }}{{ $cands = $cands | append (dict "src" . "alt" (default "" $sec.caption)) }}{{ end }}{{ end }}
-{{ range .Params.architectureDiagrams }}{{ $d := . }}{{ with $d.src }}{{ $cands = $cands | append (dict "src" . "alt" (default "" $d.caption)) }}{{ end }}{{ end }}
-{{ range .Params.photos }}{{ $p := . }}{{ with $p.src }}{{ $cands = $cands | append (dict "src" . "alt" (default "" $p.caption)) }}{{ end }}{{ end }}
-{{ with $site.Params.ogImage }}{{ $cands = $cands | append (dict "src" . "alt" (printf "The %s lab" $site.Params.shortTitle)) }}{{ end }}
-{{ with $site.Params.logo }}{{ $cands = $cands | append (dict "src" . "alt" (default (printf "%s logo" $site.Params.shortTitle) $site.Params.logoAlt)) }}{{ end }}
-
-{{ $img := "" }}{{ $imgAlt := "" }}
-{{ range $cands }}
-  {{ if not $img }}
-    {{ $onDisk := printf "static/%s" (strings.TrimPrefix "/" .src) }}
-    {{ if or (hasPrefix .src "http") (fileExists $onDisk) }}{{ $img = .src }}{{ $imgAlt = .alt }}{{ end }}
-  {{ end }}
-{{ end }}
-{{/* Every candidate was missing from disk (or there were none): use
-     ogImage anyway so the tag is still emitted and whoever fixes the
-     file later doesn't also have to come back and fix the markup. */}}
-{{ if not $img }}{{ $img = $site.Params.ogImage }}{{ end }}
-{{ $imgAlt = $imgAlt | default .Title | plainify }}
-
-{{/* Absolute URL, always — a relative og:image is ignored by most
-     scrapers, and the /nanofab_web/ subpath has to be in there, which
-     is what absURL handles. Spaces are escaped because a few filenames
-     in static/images/ have them and an unescaped space breaks the tag. */}}
+{{/* ---------- Link previews ---------- */}}
+{{ $img := .Params.image | default $site.Params.ogImage }}
 {{ $imgURL := "" }}
 {{ with $img }}{{ $imgURL = replace (strings.TrimPrefix "/" . | absURL) " " "%20" }}{{ end }}
-
-{{/* Pixel dimensions, read straight out of the file in static/.
-     images.Config reads the header of an image anywhere in the project
-     — no need to move anything into assets/ and no image processing is
-     triggered, so the build stays fast. Telling a scraper the size up
-     front is what stops the "preview appears a second later, reflowing
-     the message" effect in Slack and iMessage.
-     Guarded twice: images.Config fails the build on a missing file, and
-     it cannot read SVG (which has no pixel size in its header). */}}
-{{ $imgW := 0 }}{{ $imgH := 0 }}
-{{ with $img }}
-  {{ $onDisk := printf "static/%s" (strings.TrimPrefix "/" .) }}
-  {{ if and (in (slice ".jpg" ".jpeg" ".png" ".gif" ".webp" ".bmp" ".tif" ".tiff") (lower (path.Ext .))) (fileExists $onDisk) }}
-    {{ $cfg := images.Config $onDisk }}
-    {{ $imgW = $cfg.Width }}{{ $imgH = $cfg.Height }}
-  {{ end }}
-{{ end }}
-
-{{/* The shared headline for both preview families, so they can't drift. */}}
-{{ $shareTitle := .Title }}
-{{ if .IsHome }}{{ $shareTitle = $site.Title }}{{ end }}
-
+{{ $shareTitle := .Title }}{{ if .IsHome }}{{ $shareTitle = $site.Title }}{{ end }}
 <meta property="og:site_name" content="{{ $site.Title }}" />
 <meta property="og:title" content="{{ $shareTitle }}" />
 <meta property="og:description" content="{{ $desc }}" />
-{{/* A machine page is a documentation write-up about one tool, not a
-     site front page, so it declares og:type "article" — that is what
-     makes LinkedIn and Slack show it as a document with a modified
-     date rather than as a bare link. Everything else stays "website". */}}
-<meta property="og:type" content="{{ if $isMachine }}article{{ else }}website{{ end }}" />
+<meta property="og:type" content="{{ if $isPost }}article{{ else }}website{{ end }}" />
 <meta property="og:url" content="{{ .Permalink }}" />
-<meta property="og:locale" content="{{ replace $lang "-" "_" }}" />
-{{/* Only when we have a full day-precision date. schema.org's
-     dateModified (further down) is happy with "2026-09", but Open
-     Graph specifies a datetime here, and a month-only value is the
-     kind of thing a validator rejects outright. So this tag waits for
-     a `documentationUpdated` that actually names a day. */}}
-{{ if and $isMachine (eq (len $modified) 10) }}<meta property="article:modified_time" content="{{ $modified }}" />{{ end }}
+<meta property="og:locale" content="en_US" />
+{{ if $isPost }}<meta property="article:published_time" content="{{ .Date.Format "2006-01-02" }}" />{{ end }}
 {{ with $imgURL }}
 <meta property="og:image" content="{{ . }}" />
-<meta property="og:image:alt" content="{{ $imgAlt }}" />
-{{ if and (gt $imgW 0) (gt $imgH 0) }}
-<meta property="og:image:width" content="{{ $imgW }}" />
-<meta property="og:image:height" content="{{ $imgH }}" />
-{{ end }}
-{{/* ---------- Twitter/X cards ----------
-     X does fall back to the og:* tags when a twitter:* twin is absent,
-     but it is the only one that does reliably, and the twitter:* family
-     is also what several other apps read first. Previously only
-     twitter:card was set, so on those apps a shared link lost its
-     title, text and picture.
-
-     These are deliberately the SAME variables as the og:* tags above
-     rather than separate values — that is the whole point: two sets of
-     tags that are computed from one source can never disagree, so a
-     future edit to the description can't fix one preview and break the
-     other. Nothing is emitted unless there is a picture to go with it,
-     because "summary_large_image" without an image is a broken card.
-     No twitter:site / twitter:creator: the club has no X account, and
-     pointing at a handle we don't own would be worse than silence. */}}
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="{{ $shareTitle }}" />
 <meta name="twitter:description" content="{{ $desc }}" />
 <meta name="twitter:image" content="{{ . }}" />
-<meta name="twitter:image:alt" content="{{ $imgAlt }}" />
 {{ end }}
-
-{{/* Google Search Console ownership check (README 4.19). */}}
 {{ with $site.Params.googleSiteVerification }}<meta name="google-site-verification" content="{{ . }}" />{{ end }}
 
-{{/* ==============================================================
-     STRUCTURED DATA (JSON-LD)
-
-     Hidden machine-readable facts. This is what lets Google show the
-     club's name, logo and social links in a knowledge panel, print a
-     "Home › Tube Furnace" breadcrumb under a result instead of a raw
-     URL, and understand that a machine page is technical documentation
-     published by the club rather than a product listing.
-
-     Everything below is built from real hugo.toml params and real front
-     matter. Nothing is invented. That rule is not pedantry: structured
-     data that contradicts the visible page is a manual-action risk, and
-     fake ratings, prices, dates or authors are exactly what Google's
-     spam policies are looking for. If a field has no honest source, it
-     is left out — an absent field costs nothing, a wrong one costs the
-     site's eligibility for rich results.
-
-     One <script> per page holding an @graph (a list of nodes that can
-     point at each other by @id), rather than three separate scripts
-     repeating the club's details. The two stable ids are:
-       …/nanofab_web/#organization   the club
-       …/nanofab_web/#website        the site
-     Every page carries both, so whichever page Google crawls first it
-     learns who publishes the site; the machine pages then reference
-     them by @id instead of restating them.
-     ============================================================== */}}
+{{/* ---------- Structured data ----------
+     Only facts that are true and visible. No parentOrganization: the
+     club is an RSO and independent of the University, which is what
+     disambiguatingDescription says in the University's own words. */}}
 {{ if ne .Kind "404" }}
   {{ $homeURL := $site.Home.Permalink }}
   {{ $orgID := printf "%s#organization" $homeURL }}
-  {{ $siteID := printf "%s#website" $homeURL }}
-
-  {{/* ---------- The club ----------
-       sameAs is how Google confirms that this site, the LinkedIn page
-       and the Instagram account are one organisation, which is what
-       merges them into a single knowledge panel. The GitHub org is
-       included for the same reason; the Discord invite is NOT, because
-       an invite link is not a profile and expires.
-
-       disambiguatingDescription carries the University's required RSO
-       sentence verbatim (README section 9). It is here on purpose: the
-       club's name and description both say "University of Minnesota",
-       and a machine reading only those could reasonably conclude the
-       University runs this. It doesn't. There is deliberately NO
-       parentOrganization / memberOf / affiliation claim for the same
-       reason — the club is a Registered Student Organization and is
-       independent, and schema.org has no vocabulary that states "at,
-       but independent of", so the plain-language sentence is the only
-       honest way to say it. Do not swap it for parentOrganization. */}}
   {{ $sameAs := slice }}
-  {{ range slice $site.Params.linkedinURL $site.Params.instagramURL $site.Params.githubURL }}
-    {{ with . }}{{ $sameAs = $sameAs | append . }}{{ end }}
-  {{ end }}
-  {{ $org := dict
-       "@type" "Organization"
-       "@id" $orgID
-       "name" $site.Title
-       "url" $homeURL }}
-  {{ with $site.Params.shortTitle }}{{ $org = merge $org (dict "alternateName" .) }}{{ end }}
-  {{ with $site.Params.description }}{{ $org = merge $org (dict "description" .) }}{{ end }}
-  {{ with $sameAs }}{{ $org = merge $org (dict "sameAs" .) }}{{ end }}
+  {{ range slice $site.Params.linkedinURL $site.Params.instagramURL $site.Params.githubURL }}{{ with . }}{{ $sameAs = $sameAs | append . }}{{ end }}{{ end }}
+  {{ $org := dict "@type" "Organization" "@id" $orgID "name" $site.Title "url" $homeURL "description" $site.Params.description "sameAs" $sameAs "disambiguatingDescription" $site.Params.umn.rsoDisclaimer }}
   {{ with $site.Params.logo }}{{ $org = merge $org (dict "logo" (strings.TrimPrefix "/" . | absURL)) }}{{ end }}
   {{ with $site.Params.contactEmail }}{{ $org = merge $org (dict "email" .) }}{{ end }}
-  {{ with $site.Params.umn.rsoDisclaimer }}{{ $org = merge $org (dict "disambiguatingDescription" .) }}{{ end }}
-
-  {{/* ---------- The site ----------
-       NOTE: there is deliberately no SearchAction / sitelinks search
-       box here. That markup promises Google a URL it can send a query
-       to (…/?q=tube+furnace) and get a results page back. This site's
-       search is an overlay in static/js/site.js reading /index.json —
-       it has no URL of its own and ignores the query string entirely.
-       Declaring a SearchAction would hand Google a link that renders
-       the homepage with the query silently dropped, which is worse than
-       having no search box in the results at all. If search ever grows
-       a real ?q= URL, add it then — not before. */}}
-  {{ $website := dict
-       "@type" "WebSite"
-       "@id" $siteID
-       "name" $site.Title
-       "url" $homeURL
-       "inLanguage" $lang
-       "publisher" (dict "@id" $orgID) }}
-  {{ with $site.Params.shortTitle }}{{ $website = merge $website (dict "alternateName" .) }}{{ end }}
-  {{ with $site.Params.description }}{{ $website = merge $website (dict "description" .) }}{{ end }}
-
-  {{ $nodes := slice $org $website }}
-
-  {{ if $isMachine }}
-    {{/* ---------- A machine page ----------
-         TechArticle, not Product and not CreativeWork. Product would be
-         wrong twice over: none of this is for sale, and Product markup
-         invites the offer/price/rating fields that we have nothing
-         honest to put in. CreativeWork is accurate but says so little
-         that Google does nothing with it. TechArticle is what these
-         pages actually are — a technical write-up of one tool, with an
-         overview, specs, subsystems, assembly notes and troubleshooting
-         — and every field it needs is already in the front matter.
-
-         author and publisher are both the club rather than a person:
-         the pages are written collectively and no page names an author,
-         so naming one would be a fabrication.
-
-         dateModified appears ONLY on the six machines that currently
-         set documentationUpdated, and only when that string could be
-         parsed into a real ISO date further up this file. The other
-         pages simply omit it. */}}
-    {{ $article := dict
-         "@type" "TechArticle"
-         "@id" (printf "%s#article" .Permalink)
-         "headline" .Title
-         "name" .Title
-         "url" .Permalink
-         "inLanguage" $lang
-         "isPartOf" (dict "@id" $siteID)
-         "author" (dict "@id" $orgID)
-         "publisher" (dict "@id" $orgID) }}
-    {{ with $desc }}{{ $article = merge $article (dict "description" .) }}{{ end }}
-    {{ with $imgURL }}{{ $article = merge $article (dict "image" .) }}{{ end }}
-    {{ with $modified }}{{ $article = merge $article (dict "dateModified" .) }}{{ end }}
-    {{ $nodes = $nodes | append $article }}
-
-    {{/* ---------- Breadcrumb ----------
-         Two levels, Home › this machine. There is no middle "The Fab"
-         step even though the README describes one: content/machines/
-         _index.md is set to `render: never`, so /machines/ is not a
-         page and a breadcrumb item has to point at a real URL.
-         (This also fixes a quiet bug — the machine used to be given
-         position 3 with no position 2 anywhere, and a BreadcrumbList
-         with a gap in its numbering is invalid, so Google was likely
-         throwing the whole breadcrumb away.) */}}
-    {{ $crumbs := slice
-         (dict "@type" "ListItem" "position" 1 "name" "Home" "item" $homeURL)
-         (dict "@type" "ListItem" "position" 2 "name" .Title "item" .Permalink) }}
-    {{ $nodes = $nodes | append (dict
-         "@type" "BreadcrumbList"
-         "@id" (printf "%s#breadcrumb" .Permalink)
-         "itemListElement" $crumbs) }}
+  {{ $nodes := slice $org (dict "@type" "WebSite" "@id" (printf "%s#website" $homeURL) "name" $site.Title "url" $homeURL "inLanguage" "en-US" "publisher" (dict "@id" $orgID)) }}
+  {{ if $isPost }}
+    {{ $nodes = $nodes | append (dict "@type" "BlogPosting" "headline" .Title "url" .Permalink "datePublished" (.Date.Format "2006-01-02") "author" (dict "@id" $orgID) "publisher" (dict "@id" $orgID) "description" $desc) }}
   {{ end }}
 <script type="application/ld+json">{{ dict "@context" "https://schema.org" "@graph" $nodes | jsonify | safeJS }}</script>
 {{ end }}
 
-{{/* Favicon — uses the club logo once params.logo is set in hugo.toml. */}}
-{{ with .Site.Params.logo }}<link rel="icon" href="{{ strings.TrimPrefix "/" (.) | relURL }}" />{{ end }}
+{{ with $site.Params.logo }}<link rel="icon" type="image/png" href="{{ strings.TrimPrefix "/" . | relURL }}" />{{ end }}
+{{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ $site.Title }}" />{{ end }}
 
-{{/* ============================================================
-     CONNECTION AND LCP HINTS
+{{/* ---------- Fonts: Geist + Geist Mono, self-hosted (SIL OFL, static/fonts/) ---------- */}}
+<link rel="preload" href="{{ "fonts/Geist-Variable.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="{{ "fonts/GeistMono-Variable.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
+{{ if .IsHome }}{{ with $site.Params.heroImage }}<link rel="preload" as="image" href="{{ strings.TrimPrefix "/" . | relURL }}" />{{ end }}{{ end }}
 
-     Nothing here changes what the page looks like or what it loads.
-     These tags only let the browser start work sooner.
-
-     preconnect opens the TCP connection and does the TLS handshake for
-     an origin before anything has asked for a file from it. That is
-     worth roughly 100–300 ms per origin on a phone. Only the origins
-     this page genuinely fetches from are listed — a handshake to an
-     origin the page never uses is pure waste, which is why there is no
-     speculative list of CDNs here:
-
-       fonts.googleapis.com  } already declared in the FONTS block
-       fonts.gstatic.com     } below, next to the stylesheet they serve.
-
-     cdn.tailwindcss.com used to be listed here. Tailwind is now a
-     local stylesheet, so the site never contacts that origin — and a
-     handshake to an origin the page never uses is exactly the waste
-     this block is supposed to avoid.
-
-     dns-prefetch is the same idea for browsers that ignore preconnect;
-     it is one DNS lookup and is harmless where preconnect already won.
-============================================================ */}}
-{{/* ---------- The homepage hero photograph ----------
-     This is the Largest Contentful Paint element: a full-bleed
-     photograph at the top of the homepage, and the thing Google's Core
-     Web Vitals actually times. Telling the browser about it here, in
-     the <head>, means the download starts before the parser has even
-     reached <body> — and before the blocking Tailwind script above has
-     finished, which is the real win.
-
-     Safe to do because the URL below is produced by the SAME
-     expression hero.html uses, so it is byte-identical to the src in
-     the markup and the browser serves the <img> from that one fetch.
-     It does NOT download twice.
-
-     Homepage only. Do not copy this pattern for other images: a
-     preload for something that isn't needed immediately competes with
-     the thing that is, and makes the page measurably slower. Also do
-     not add a preload here if hero.html ever gains a srcset — the
-     preload would then fetch a size the <img> doesn't use, and you'd
-     be downloading the photograph twice. */}}
-{{ if .IsHome }}{{ with $site.Params.heroImage }}
-<link rel="preload" as="image" fetchpriority="high" href="{{ strings.TrimPrefix "/" . | relURL }}" />
-{{ end }}{{ end }}
-
-<!-- ============================================================
-     FONTS
-
-     Fraunces       = headings
-     Libre Franklin = body text
-     Courier Prime  = numbers, spec values, small labels
-
-     Picked for character rather than neutrality. Fraunces is an
-     old-style serif with a "wonk" axis (see styles.css) that gives
-     the headings a hand-cut look; Libre Franklin is a Franklin
-     Gothic revival, so it reads institutional rather than generic;
-     Courier Prime is a proper typewriter face, which suits a lab
-     notebook better than a coding mono does.
-
-     Deliberately NOT Inter / Space Grotesk / Geist / JetBrains Mono
-     — that combination is the house style of every AI and developer
-     tool landing page, and it is what made this site look generic.
-     If you swap any of these, avoid those four.
-============================================================ -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=Libre+Franklin:wght@400..700&display=swap" rel="stylesheet" />
-
-<!-- ============================================================
-     STYLESHEETS
-
-     One file per area of the site, loaded in this order.
-
-     styles.css is the PRE-REDESIGN sheet and must come FIRST. At
-     equal specificity the last sheet wins, so loading the legacy
-     rules first is what lets the new per-area sheets override them.
-     (This was the other way round at first, which quietly handed
-     every tie to the old stylesheet.)
-
-     system.css then establishes the tokens and primitives, and the
-     area sheets build on top.
-
-     Which file owns what is set out in .claude/design-language.md §10.
-     Keep edits inside your area's file.
-============================================================ -->
-{{ range slice "styles" "system" "shell" "hero" "bands" "people" "doc" "footer" }}
-<link rel="stylesheet" href="{{ (printf "css/%s.css" .) | relURL }}" />
-{{ end }}
-<!-- ============================================================
-     TAILWIND — prebuilt stylesheet, static/css/tailwind.css
-
-     This used to be <script src="https://cdn.tailwindcss.com"> plus
-     an inline `tailwind.config` block. That shipped ~400 KB of
-     JavaScript and compiled the CSS in the visitor's browser on
-     every page view, which is a render-blocking script and the
-     site's worst Core Web Vitals problem.
-
-     tailwind.css is the same CSS, generated ahead of time with
-     Tailwind v3.4.17 (the exact version the CDN served) from the
-     same theme extension. It is committed as a plain static file,
-     so no build step is needed here or in GitHub Actions.
-
-     It loads LAST, after the hand-written sheets. That is not a
-     slip: the Play CDN appended its generated <style> to the end of
-     <head>, so Tailwind utilities already won ties against the
-     hand-written sheets. Moving it earlier would silently flip
-     the cascade.
-
-     IMPORTANT: the colours now live in tailwind.config.js at the
-     repo root, NOT in hugo.toml. Editing [params.colors] alone no
-     longer re-themes the utilities — the hand-written sheets still
-     read nothing from it either, so change both if you re-theme.
-
-     Regenerate after adding a new utility class or changing the
-     theme (needs network once, for npx):
-       hugo -d /tmp/pub        # so the scan sees every emitted class
-       npx tailwindcss@3.4.17 -c tailwind.config.js \
-         -i tailwind-input.css -o static/css/tailwind.css
-============================================================ -->
-<link rel="stylesheet" href="{{ "css/tailwind.css" | relURL }}" />
+{{/* ---------- The stylesheet. Built from tailwind-input.css (npm run build:css). ---------- */}}
+{{ $css := "css/site.css" }}
+<link rel="stylesheet" href="{{ $css | relURL }}?v={{ substr (readFile (printf "static/%s" $css) | md5) 0 10 }}" />
+<script>document.documentElement.classList.add('js');</script>

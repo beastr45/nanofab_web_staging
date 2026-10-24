@@ -1,147 +1,61 @@
-{{/* ==================================================================
-     THE FOOTER — closes every page.
-
-     Cut from four columns + affiliation + copyright + RSO block down
-     to two blocks. The full-screen menu carries every navigation
-     link, so a footer repeating the four bands and five "Elsewhere"
-     links was pure duplication (design-language §2). Gone with them:
-     the per-band machine counts (they live on the homepage and
-     /machines/), the column eyebrows, the gold measure rule, the
-     "19 machines documented" line, and the "student organization at
-     the University of Minnesota" blurb — the RSO disclaimer below
-     already says exactly that, verbatim and by law.
-
-     What is left is what appears nowhere else:
-       1. who we are, how to reach us, where we are
-       2. the University's required legal block
-
-     GROUND: still `void`. §4 keeps the void tokens for the footer
-     alone and §6 names the footer as the one permitted ground change,
-     so the dark is a sanctioned terminus, not a leftover from the old
-     dark hero. The gold focus ring in system.css covers it.
-
-     ------------------------------------------------------------------
-     WHY THERE IS NO UMN WORDMARK HERE
-
-     `static/images/logo/UMN_horizontal-digital.svg` and
-     `…-reversed-digital.svg` are the full University wordmark (Block M
-     + "University of Minnesota", with the ®). That is a registered
-     University trademark and README section 9 is explicit: a
-     Registered Student Organization may not use it. The only
-     University mark an RSO may carry is the "Block M RSO" mark, and it
-     belongs in the legal block at the very bottom, on its own, beside
-     the disclaimer. Those files stay unused on purpose.
-
-     Plain text links to umn.edu and cse.umn.edu are fine — words are
-     not trademarks. If the club obtains the RSO mark, set
-     `rsoMark = "/images/logo/…"` in hugo.toml under [params.umn] and
-     it appears below automatically.
-     ------------------------------------------------------------------
-     CSS: static/css/footer.css. Nothing else writes to it.
-     ================================================================== */}}
-
+{{/* ==============================================================
+     THE FOOTER: a full sitemap, so no page is a dead end, then the
+     University's required legal block. The disclaimer (and the Block M
+     RSO mark, once params.umn.rsoMark is set) must stay at the very
+     bottom, on its own, away from the club logo. README, "UMN
+     branding rules".
+     ============================================================== */}}
 {{ $umn := site.Params.umn }}
-
-{{/* THE WORDMARK. One string, used twice below (the club mark beside
-     the logo, and the copyright line), so the footer can never print
-     two different names for the club. It is "Minnesota
-     Nanofabrication" — not "MN NanoFab", which this footer used to
-     show. hugo.toml's `title` is still the long legal name
-     ("Nanofabrication Club at the University of Minnesota"), which is
-     right for <title> and wrong at 24px here; once that file carries
-     the wordmark too, replace this literal with the param and delete
-     this note. */}}
-{{ $wordmark := "Minnesota Nanofabrication" }}
-
-<footer class="site-footer bg-void text-white" role="contentinfo">
-  <div class="mx-auto max-w-6xl px-6 py-20 sm:py-24">
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-12">
-
-      {{/* ---------------- Identity and contact ----------------
-           The email is the route in. Discord is not repeated as text
-           here — it is already one of the marks below. */}}
+{{ $docs := site.Params.docsURL }}
+<footer class="footer theme-dark" data-nav="dark">
+  <div class="wrap">
+    <div class="footer-grid">
       <div>
-        <div class="flex items-center gap-3">
-          {{ partial "logo.html" (dict "size" 40) }}
-          {{/* Longer than the old "MN NanoFab", so it steps down a
-               size on narrow screens (still well over the 15px floor,
-               §3) and uses leading-tight rather than leading-none in
-               case it takes two lines. */}}
-          <span class="font-display font-semibold text-[1.375rem] sm:text-[1.5rem] tracking-tight leading-tight">{{ $wordmark }}</span>
-        </div>
-
-        {{ with site.Params.contactEmail }}
-        {{/* A button, not the address itself: "Contact us" says what
-             it does, and the address is an implementation detail. */}}
-        <a href="mailto:{{ . }}?subject=Minnesota%20Nanofabrication"
-           class="ft-contact inline-flex items-center mt-7">Contact us</a>
-        {{ end }}
-
-        {{/* Social marks. Inline SVG — no icon font, no emoji. Square
-             hairline cells (§6). GitHub / LinkedIn / Discord path data
-             matches the full-screen menu's, so the marks agree. */}}
-        <ul class="mt-8 flex items-center gap-3">
-          {{ partial "socials.html" (dict "size" 28 "class" "ft-social") }}
-        </ul>
+        <a class="brand" href="{{ "" | relURL }}">
+          {{ with site.Params.logo }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" width="40" height="40" />{{ end }}
+          <span class="brand-name">Minnesota Nanofabrication</span>
+        </a>
+        <p class="blurb">Undergraduates at the University of Minnesota building a semiconductor fab, one machine at a time.</p>
       </div>
-
-      {{/* ---------------- Affiliation ----------------
-           Set in type, not in a trademark. The eyebrow is gone; two
-           University links need no label. */}}
-      <div class="lg:justify-self-end lg:text-right">
-        <p class="text-[1.1875rem] leading-relaxed">
-          <a href="{{ $umn.universityURL }}" rel="noopener" class="ft-link">{{ $umn.universityName }}</a>
-        </p>
-        <p class="text-[1.1875rem] leading-relaxed mt-3">
-          <a href="{{ $umn.collegeURL }}" rel="noopener" class="ft-link">{{ $umn.collegeName }}</a>
-        </p>
+      <div class="f-links">
+        <p class="f-h">Explore</p>
+        <a href="{{ "" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>Home</a>
+        {{ range site.Menus.main }}
+        {{ $href := .URL }}{{ if hasPrefix $href "/#" }}{{ $href = printf "%s%s" ("" | relURL) (strings.TrimPrefix "/" $href) }}{{ end }}
+        <a href="{{ $href }}">{{ .Name }}</a>
+        {{ end }}
+      </div>
+      <div class="f-links">
+        <p class="f-h">Docs</p>
+        {{ with $docs }}
+        <a href="{{ . }}" target="_blank" rel="noopener">Machine documentation {{ partial "icon.html" "ne" }}</a>
+        <a href="{{ . }}getting-started.html" target="_blank" rel="noopener">Getting started {{ partial "icon.html" "ne" }}</a>
+        <a href="{{ . }}contributing.html" target="_blank" rel="noopener">How to contribute {{ partial "icon.html" "ne" }}</a>
+        {{ end }}
+        <a href="{{ $umn.universityURL }}" rel="noopener">{{ $umn.universityName }}</a>
+        <a href="{{ $umn.collegeURL }}" rel="noopener">{{ $umn.collegeName }}</a>
+      </div>
+      <div>
+        <p class="f-h">Connect</p>
+        <div class="pills">
+          {{ with site.Params.discordURL }}<a class="pill" href="{{ . }}" target="_blank" rel="noopener">Discord</a>{{ end }}
+          {{ with site.Params.githubURL }}<a class="pill" href="{{ . }}" target="_blank" rel="noopener">GitHub</a>{{ end }}
+          {{ with site.Params.linkedinURL }}<a class="pill" href="{{ . }}" target="_blank" rel="noopener">LinkedIn</a>{{ end }}
+          {{ with site.Params.instagramURL }}<a class="pill" href="{{ . }}" target="_blank" rel="noopener">Instagram</a>{{ end }}
+          {{ with site.Params.contactEmail }}<a class="pill" href="mailto:{{ . }}?subject=Minnesota%20Nanofabrication">Email</a>{{ end }}
+        </div>
       </div>
     </div>
 
-    {{/* ==============================================================
-         THE LEGAL BLOCK — LAST THING ON THE PAGE.
+    <div class="wordmark" id="wordmark" aria-hidden="true"><span>Minnesota Nanofab</span></div>
 
-         THE DISCLAIMER IS MANDATORY. The University requires this
-         exact sentence on a registered student organization's public
-         platforms, and the footer is the only place it appears. Do
-         not reword it, fold it into the copyright line, or delete it.
-         It is stored once, in hugo.toml under [params.umn] as
-         rsoDisclaimer.
-
-         This block is also the only correct home for the Block M RSO
-         or Goldy RSO mark: the rule is that the mark goes at the
-         BOTTOM of the piece, on its own, separate from the student
-         group's logo and name, with the disclaimer beside it. That is
-         exactly this layout — below a rule, away from the club mark
-         above, disclaimer alongside. Don't move it up and don't lock
-         it up with the club logo; both break the rule. The mark
-         appears once params.umn.rsoMark is set; the disclaimer shows
-         either way. README section 9.
-
-         The rule above it is the one hairline left in the footer, and
-         it earns its place: it separates a required legal notice from
-         the club's own copy, which would otherwise read as one
-         paragraph. Everything here sits at the 15px floor (§3), not
-         below it — there is no fine print on this site.
-         ============================================================== */}}
-    <div class="mt-16 sm:mt-20 pt-8 border-t border-void-line">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-        {{ with $umn.rsoMark }}
-        <img src="{{ strings.TrimPrefix "/" (.) | relURL }}"
-             alt="University of Minnesota Registered Student Organization"
-             class="h-12 w-auto shrink-0" />
-        {{ end }}
-        <p class="text-[0.9375rem] leading-relaxed text-white/85 max-w-3xl">
-          {{ $umn.rsoDisclaimer }}
-        </p>
-      </div>
-      <p class="text-[0.9375rem] leading-relaxed text-void-muted max-w-3xl mt-3">
-        The University of Minnesota is an equal opportunity educator and employer.
-      </p>
-      <p class="text-[0.9375rem] leading-relaxed text-void-muted mt-3">
-        &copy; {{ now.Year }} {{ $wordmark }}
-      </p>
+    <div class="legal">
+      {{ with $umn.rsoMark }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="University of Minnesota Registered Student Organization" />{{ end }}
+      <p>{{ $umn.rsoDisclaimer }}</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© {{ now.Year }} Minnesota Nanofabrication Club · Built by members</span>
+      <span>The University of Minnesota is an equal opportunity educator and employer.</span>
     </div>
   </div>
 </footer>

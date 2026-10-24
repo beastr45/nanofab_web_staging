@@ -1,49 +1,69 @@
 {{/* ==============================================================
-     THE TOP BAR.
+     THE HEADER: brand left, the main navigation right, always on
+     screen. The bar takes the colour of whatever section is under it
+     (each section carries data-nav="dark|light"; static/js/site.js
+     does the switching). Under 1024px the links fold into the
+     full-screen menu below.
 
-     Brand left, three-line menu mark right — the SpaceX arrangement.
-
-     THERE IS NO BAR OVER THE HERO. On the homepage the header has no
-     background at all: the logo, the wordmark and the menu mark sit
-     directly on the photograph, which runs the full viewport height
-     underneath them. Once the page scrolls past the photograph the
-     header turns to paper, because from there down it is floating over
-     ordinary content. .is-solid is applied by static/js/site.js; with
-     JavaScript off it stays light, which still reads because the
-     hero's top shade is darkest exactly where these marks sit.
-
-     On every other page there is no hero, so the header starts solid.
-
-     Search is not in the bar. The overlay is still wired and opens on
-     "/" or Cmd/Ctrl-K. To drop it entirely: delete the search.html
-     call below, remove `home = ["HTML", "JSON"]` from [outputs] in
-     hugo.toml, and delete layouts/index.json.
+     The links come from [menus.main] in hugo.toml, plus Docs (the
+     mdBook site, params.docsURL) and the Join button (Discord).
      ============================================================== */}}
-<header id="topbar"
-        class="fixed top-0 inset-x-0 z-50 h-20 sm:h-24 transition-colors duration-300"
-        data-over-hero="{{ if .IsHome }}true{{ else }}false{{ end }}">
-  <div class="h-full px-5 sm:px-8 flex items-center justify-between gap-4">
-
-    <a href="{{ "" | relURL }}"
-       class="topbar-mark inline-flex items-center gap-3 font-display font-semibold tracking-tight leading-none whitespace-nowrap">
-      {{/* The wordmark already says the name, so the mark is decorative
-           for a screen reader. Sized in em, so it tracks the wordmark's
-           responsive font-size without a second set of breakpoints. */}}
-      {{ with site.Params.logo }}
-      <img class="topbar-logo" src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" aria-hidden="true" decoding="async" />
-      {{ end }}
-      <span class="topbar-word">Minnesota Nanofabrication</span>
+{{ $page := . }}
+{{ $docs := site.Params.docsURL }}
+{{ $join := site.Params.discordURL }}
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="siteHeader">
+  <nav class="nav" id="nav" aria-label="Main navigation">
+    <a class="brand" href="{{ "" | relURL }}" {{ if .IsHome }}aria-current="page"{{ end }} aria-label="{{ site.Title }}, home">
+      {{ with site.Params.logo }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" width="32" height="32" />{{ end }}
+      <span class="brand-name">Minnesota Nanofabrication</span>
+      <span class="brand-tag">University of Minnesota</span>
     </a>
-
-    {{/* Three equal lines — the universal mark, no label needed. */}}
-    <label for="nav-open" tabindex="0" role="button" aria-label="Open menu"
-           class="topbar-ctl topbar-burger group cursor-pointer select-none shrink-0">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </label>
-  </div>
+    <div class="nav-actions">
+      {{ range site.Menus.main }}
+        {{ $current := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
+        {{ $href := .URL }}{{ if hasPrefix $href "/#" }}{{ $href = printf "%s%s" ("" | relURL) (strings.TrimPrefix "/" $href) }}{{ end }}
+        <a class="nav-link" href="{{ $href }}"{{ if $current }} aria-current="page"{{ end }}{{ if hasPrefix .URL "/#" }} data-spy="{{ strings.TrimPrefix "/#" .URL }}"{{ end }}>{{ .Name }}</a>
+      {{ end }}
+      {{ with $docs }}<a class="nav-link" href="{{ . }}" target="_blank" rel="noopener">Docs {{ partial "icon.html" "ne" }}</a>{{ end }}
+      {{ with $join }}<a class="nav-cta" href="{{ . }}" target="_blank" rel="noopener">Join the club</a>{{ end }}
+      <button class="nav-menu" id="menuToggle" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false"><span></span></button>
+    </div>
+  </nav>
 </header>
 
-{{ partial "nav-overlay.html" . }}
-{{ partial "search.html" . }}
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+  <div class="menu-top">
+    <a class="brand" href="{{ "" | relURL }}" data-close>
+      {{ with site.Params.logo }}<img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="" width="32" height="32" />{{ end }}
+      <span class="brand-name">Minnesota Nanofabrication</span>
+    </a>
+    <button class="menu-close" id="menuClose" type="button" aria-label="Close menu">{{ partial "icon.html" "x" }}</button>
+  </div>
+  <div class="menu-body">
+    <ul class="menu-main">
+      <li><a href="{{ "" | relURL }}" data-close{{ if .IsHome }} aria-current="page"{{ end }}><span class="idx">/01</span>Home</a></li>
+      {{ range $i, $m := site.Menus.main }}
+        {{ $current := or ($page.IsMenuCurrent "main" $m) ($page.HasMenuCurrent "main" $m) }}
+        {{ $href := $m.URL }}{{ if hasPrefix $href "/#" }}{{ $href = printf "%s%s" ("" | relURL) (strings.TrimPrefix "/" $href) }}{{ end }}
+        <li><a href="{{ $href }}" data-close{{ if $current }} aria-current="page"{{ end }}><span class="idx">/{{ printf "%02d" (add $i 2) }}</span>{{ $m.Name }}</a></li>
+      {{ end }}
+    </ul>
+    <div class="menu-side">
+      <div>
+        <h3>Documentation</h3>
+        {{ with $docs }}<a href="{{ . }}" target="_blank" rel="noopener">Machine docs <span aria-hidden="true">↗</span></a>{{ end }}
+        {{ with $docs }}<a href="{{ . }}contributing.html" target="_blank" rel="noopener">How to contribute <span aria-hidden="true">↗</span></a>{{ end }}
+      </div>
+      <div>
+        <h3>Connect</h3>
+        {{ with $join }}<a href="{{ . }}" target="_blank" rel="noopener">Discord <span aria-hidden="true">↗</span></a>{{ end }}
+        {{ with site.Params.githubURL }}<a href="{{ . }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>{{ end }}
+        {{ with site.Params.linkedinURL }}<a href="{{ . }}" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>{{ end }}
+        {{ with site.Params.instagramURL }}<a href="{{ . }}" target="_blank" rel="noopener">Instagram <span aria-hidden="true">↗</span></a>{{ end }}
+        {{ with site.Params.contactEmail }}<a href="mailto:{{ . }}">{{ . }}</a>{{ end }}
+      </div>
+      <p>A student club at the University of Minnesota, building a semiconductor fab one machine at a time.</p>
+    </div>
+  </div>
+</div>

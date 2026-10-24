@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Locale }}">
+<html lang="en-US">
 <head>
   {{ partial "head.html" . }}
 </head>
-{{/* The top bar is solid on every page now, so every page — the
-     homepage included — starts below it. */}}
-<body class="bg-paper text-ink font-body antialiased{{ if not .IsHome }} pt-20 sm:pt-24{{ end }}">
-  <a href="#main" class="skip-link">Skip to content</a>
+<body>
   {{ partial "header.html" . }}
   <main id="main">
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
+  <script src="{{ "js/site.js" | relURL }}" defer></script>
 </body>
 </html>

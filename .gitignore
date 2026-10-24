@@ -12,3 +12,6 @@ resources/
 
 # Local verification screenshots, never part of the site
 .shots/
+
+# Node (only used to rebuild static/css/site.css)
+node_modules/

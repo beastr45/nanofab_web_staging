@@ -1,0 +1,29 @@
+{{/* ==============================================================
+     The dark title block at the top of every inner page.
+       {{ partial "page-hero.html" (dict
+            "page" .  "title" "…"  "lead" "…"  "eyebrow" "…"
+            "specs" (slice (dict "b" "12" "span" "In build" "href" "#gen1")) ) }}
+     The breadcrumb is built from the page's parents automatically.
+     ============================================================== */}}
+{{ $p := .page }}
+<section class="page-hero theme-dark{{ if .specs }} has-specs{{ end }}" data-nav="dark" id="top">
+  <div class="page-hero-bg" aria-hidden="true"><div class="grain"></div></div>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="{{ "" | relURL }}">Home</a>
+      {{ range $p.Ancestors.Reverse }}{{ if not .IsHome }}<span aria-hidden="true">/</span><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}{{ end }}
+      <span aria-hidden="true">/</span><span aria-current="page">{{ .eyebrow | default $p.Title }}</span>
+    </nav>
+    <h1 class="page-title">{{ .title | default $p.Title }}</h1>
+    {{ with .lead }}<p class="page-lead">{{ . }}</p>{{ end }}
+    {{ with .meta }}<div class="post-meta">{{ . }}</div>{{ end }}
+    {{ with .specs }}
+    <div class="specs">
+      {{ range . }}
+      {{ if .href }}<a class="spec" href="{{ .href }}"><b>{{ .b }}</b><span>{{ .span }}</span></a>
+      {{ else }}<div class="spec"><b>{{ .b }}</b><span>{{ .span }}</span></div>{{ end }}
+      {{ end }}
+    </div>
+    {{ end }}
+  </div>
+</section>
