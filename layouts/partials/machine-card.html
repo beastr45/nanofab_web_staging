@@ -1,42 +1,55 @@
 {{/* ==============================================================
-     ONE CLICKABLE MACHINE BOX.
+     ONE MACHINE CARD on /machines/. Context: dict "page" <machine>
+     "leads" <dict from machine-leads.html> "titles" <slug->title>.
 
-     CALL SIGNATURE (do not change — it is used across the site):
-       {{ partial "machine-card.html" . }}
-     with the machine page as the context.
+     Closed, it shows the process step, build state, name and one-line
+     summary. The whole top of the card is a <button> that opens it in
+     place (aria-expanded / aria-controls; Enter and Space work because
+     it is a real button). Open, it spans the full row and shows the
+     Markdown body the member wrote, the facts, and a link to the
+     machine's page on the docs site.
 
-     Used on /machines/ and at the foot of each machine page, so
-     every machine button on the site looks and behaves the same.
-
-     THE LOOK
-     A square hairline box on paper: the process step and the build
-     state along the top, the name in Fraunces, the summary at
-     reading size. It says "click me" by turning its hairline maroon
-     and its fill white under the cursor; nothing moves and nothing
-     glows (§6). Those two states are in .machine-card in
-     static/css/doc.css, which undoes the gradient and hover lift the
-     pre-redesign styles.css still sets.
-
-     The subsystem count that used to hang on a hairline at the foot
-     is gone: on a machine's own page the list of subsystems is right
-     there to be read, so the number was the same fact twice (§2).
+     Without JavaScript every card renders open (the body has no
+     `hidden` attribute until site.js adds it), so nothing is lost.
      ============================================================== */}}
-<a href="{{ .RelPermalink }}"
-   class="machine-card group flex flex-col h-full border border-line rounded-none p-6 sm:p-7">
-
-  <div class="flex items-start justify-between gap-4">
-    {{ with .Params.step }}
-    <span class="font-mono text-[1.0625rem] tracking-wide text-muted">{{ . }}</span>
-    {{ else }}
-    <span></span>
-    {{ end }}
-    {{ partial "status.html" .Params.status }}
+{{ $m := .page }}
+{{ $slug := $m.File.ContentBaseName }}
+{{ $docs := $m.Params.docs | default (printf "%s%s%s.html" site.Params.docsURL site.Params.docsMachinePath $slug) }}
+{{ $key := $m.Title | lower | replaceRE "[^a-z0-9]+" " " | strings.TrimSpace }}
+{{ $leads := index .leads $key }}
+{{ $parent := "" }}{{ with $m.Params.partOf }}{{ $parent = index $.titles . }}{{ end }}
+<article class="mcard" id="{{ $slug }}" data-card>
+  <div class="mcard-top">
+    <span class="mcard-step">{{ with .group }}{{ . }}<span aria-hidden="true"> · </span>{{ end }}{{ $m.Params.step }}</span>
+    {{ partial "status.html" $m.Params.status }}
   </div>
-
-  <h3 class="font-display font-semibold text-[1.5rem] tracking-tight leading-snug mt-6
-             group-hover:text-maroon transition-colors">
-    {{ .Title }}
-  </h3>
-
-  <p class="text-[1.0625rem] leading-relaxed text-muted mt-3 flex-1">{{ .Params.summary }}</p>
-</a>
+  <button class="mcard-toggle" type="button" aria-expanded="false" aria-controls="{{ $slug }}-body">
+    {{ with $parent }}<span class="mcard-part">Part of {{ . }}</span>{{ end }}
+    <h3 class="mcard-title">{{ $m.Title }}</h3>
+    <p class="mcard-sum">{{ $m.Params.summary }}</p>
+    <span class="mcard-more"><span class="plus" aria-hidden="true"></span><span data-label>Read more</span></span>
+  </button>
+  <div class="mcard-body" id="{{ $slug }}-body" data-body>
+    <div class="mcard-grid">
+      <div>
+        {{ with $m.Content }}
+        <div class="prose prose-sm">{{ . }}</div>
+        {{ else }}
+        <p class="mcard-empty">No write-up here yet. The team's notes, as they exist, are on the docs page.</p>
+        {{ end }}
+      </div>
+      <div>
+        <dl class="mcard-facts">
+          {{ with .group }}<div><dt>Process</dt><dd>{{ . }}</dd></div>{{ end }}
+          {{ with $m.Params.step }}<div><dt>Step</dt><dd>{{ . }}</dd></div>{{ end }}
+          <div><dt>Build</dt><dd>{{ partial "status.html" $m.Params.status }}</dd></div>
+          {{ with $m.Params.partOf }}<div><dt>Part of</dt><dd><a href="#{{ . }}">{{ index $.titles . }}</a></dd></div>{{ end }}
+          {{ with $leads }}<div><dt>Lead</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+        </dl>
+        <div class="mcard-actions">
+          <a class="btn btn-solid btn-sm" href="{{ $docs }}" target="_blank" rel="noopener">Full documentation {{ partial "icon.html" "ne" }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

@@ -1,5 +1,0 @@
-[
-  { "machine": "wet-etch", "title": "Etching (microfabrication) — overview", "type": "paper",    "url": "https://en.wikipedia.org/wiki/Etching_(microfabrication)", "note": "Background on wet vs dry etching and undercut.", "sample": "yes" },
-  { "machine": "wet-etch", "title": "Buffered oxide etch",                   "type": "paper",    "url": "https://en.wikipedia.org/wiki/Buffered_oxide_etch",        "note": "What BOE is and why it's buffered.", "sample": "yes" },
-  { "machine": "wet-etch", "title": "Hydrofluoric acid — hazards",           "type": "datasheet","url": "https://en.wikipedia.org/wiki/Hydrofluoric_acid",          "note": "Read before anyone touches BOE.", "sample": "yes" }
-]

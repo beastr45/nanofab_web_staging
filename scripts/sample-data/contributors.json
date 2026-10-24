@@ -1,5 +1,0 @@
-[
-  { "machine": "wet-etch", "name": "Member Name",  "workedOn": "Bath build and PID tuning",        "year": "2025–26", "sample": "yes" },
-  { "machine": "wet-etch", "name": "Member Name",  "workedOn": "Chemical handling and safety plan", "year": "2025–26", "sample": "yes" },
-  { "machine": "wet-etch", "name": "Member Name",  "workedOn": "Rinse and dry station",             "year": "2026",    "sample": "yes" }
-]

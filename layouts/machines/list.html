@@ -1,0 +1,79 @@
+{{ define "main" }}
+{{/* ==============================================================
+     /machines/: THE GALLERY. Every machine is a card, grouped by band
+     (data/bands.yaml) and process group, in `weight` order. Subsystems
+     (`partOf:`) sit right after the machine they belong to.
+     A sticky bar under the hero jumps between bands and highlights the
+     one you are reading.
+     ============================================================== */}}
+{{ $machines := .RegularPages }}
+{{ $bands := sort (where hugo.Data.bands "fab" true) "index" }}
+{{ $leads := partialCached "machine-leads.html" . }}
+{{ $titles := dict }}{{ range $machines }}{{ $titles = merge $titles (dict .File.ContentBaseName .Title) }}{{ end }}
+
+{{ $specs := slice }}
+{{ range $bands }}
+  {{ $n := len (where $machines "Params.band" .slug) }}
+  {{ $specs = $specs | append (dict "b" .name "span" (printf "%d machines" $n) "href" (printf "#%s" .slug)) }}
+{{ end }}
+{{ $specs = $specs | append (dict "b" (printf "%d in build" (len (where $machines "Params.status" "building"))) "span" (printf "of %d total" (len $machines))) }}
+
+{{ partial "page-hero.html" (dict "page" . "eyebrow" "Machines" "title" "Every machine, one page." "lead" .Params.lead "specs" $specs) }}
+
+<nav class="subnav" aria-label="Bands">
+  <div class="wrap subnav-inner">
+    {{ range $i, $b := $bands }}
+    <a href="#{{ $b.slug }}" data-spy="{{ $b.slug }}"><span class="idx">/{{ printf "%02d" (add $i 1) }}</span>{{ $b.name }}</a>
+    {{ end }}
+    <div class="subnav-tools">
+      <button class="btn btn-line btn-sm" type="button" data-expand-all aria-pressed="false">Open all</button>
+    </div>
+  </div>
+</nav>
+
+<section class="sec theme-light" data-nav="light" style="padding-top:0">
+  <div class="wrap">
+    {{ range $bands }}
+    {{ $band := . }}
+    {{ $inBand := where $machines "Params.band" $band.slug }}
+    {{ with $inBand }}
+    <section class="band" id="{{ $band.slug }}" aria-labelledby="{{ $band.slug }}-h">
+      <div class="band-head">
+        <div>
+          <h2 id="{{ $band.slug }}-h">{{ $band.name }}</h2>
+          {{ with $band.tagline }}<p class="mt-3">{{ . }}</p>{{ end }}
+        </div>
+        <p class="band-count">{{ len $inBand }} machines</p>
+      </div>
+      {{/* One grid per band, so a group with a single machine does not
+           leave a hole. The group name rides on each card instead. */}}
+      {{ $groups := $band.groups | default (slice (dict "slug" "" "name" "")) }}
+      <div class="cards">
+      {{ range $groups }}
+        {{ $g := . }}
+        {{ range $inBand.ByWeight }}
+          {{ if and (not .Params.partOf) (or (eq $g.slug "") (eq .Params.process $g.slug)) }}
+            {{ partial "machine-card.html" (dict "page" . "leads" $leads "titles" $titles "group" $g.name) }}
+            {{ $parent := .File.ContentBaseName }}
+            {{ range (where $inBand "Params.partOf" $parent).ByWeight }}
+              {{ partial "machine-card.html" (dict "page" . "leads" $leads "titles" $titles "group" $g.name) }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+      </div>
+    </section>
+    {{ end }}
+    {{ end }}
+
+    <div class="sec-foot" style="margin-top:clamp(64px,10vh,120px)">
+      <p class="eyebrow">Working on a machine?</p>
+      <p class="lead mt-4" style="color:var(--fg)">Each card is one Markdown file in <code class="mono">content/machines/</code>. Edit it on GitHub and the card updates. The long-form build documentation lives on the docs site.</p>
+      <div class="hero-cta mt-8">
+        <a class="btn btn-solid" href="{{ site.Params.docsURL }}contributing.html" target="_blank" rel="noopener">How to contribute {{ partial "icon.html" "ne" }}</a>
+        <a class="btn btn-line" href="{{ site.Params.githubURL }}" target="_blank" rel="noopener">GitHub {{ partial "icon.html" "ne" }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}

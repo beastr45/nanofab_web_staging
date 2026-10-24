@@ -1,18 +1,23 @@
 ---
 title: "Laser Interferometry"
 band: "gen1"
-partOf: "maskless-stepper"
 process: "patterning"
+partOf: "maskless-stepper"
 step: "Film & Surface Metrology"
-weight: 10
 status: "planned"
+weight: 10
 summary: "Measures film thickness and flatness with light."
-
-# The page renders four sections — Overview, Design, Status, Assembly —
-# and shows a "work in progress" note in each one until it is written.
-# To write one, add the matching key here: overview lives in
-# data/overviews/<this file's name>.yaml; design: takes `subsystems:`
-# and `architectureDiagrams:`; status: takes `documentation:`;
-# assembly: takes `assembly:`. Markdown in all of them.
-# See README section 4.16.
 ---
+
+Light reflecting off the top of a thin film and light reflecting off
+the bottom travel slightly different distances. Where those two waves
+line up they brighten; where they oppose, they cancel. The resulting
+pattern encodes the film thickness — and since the wavelength of the
+laser is known exactly, so is the thickness.
+
+This gives us **nanometer measurements without touching anything**,
+which matters because a stylus profiler scratches the surface it's
+measuring.
+
+It closes the loop on deposition. Right now we know roughly how thick a
+sputtered film should be from time and power. With this tool, we know.

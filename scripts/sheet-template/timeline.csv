@@ -1,4 +1,0 @@
-machine,date,milestone,status,note
-wet-etch,2025-11,Built the heated bath,done,Hot plate plus a PID loop.
-wet-etch,,Hold the bath to ± 1 °C,active,Currently drifting ± 3 °C.
-wet-etch,,Write the standard operating procedure,planned,

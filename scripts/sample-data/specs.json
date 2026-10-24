@@ -1,5 +1,0 @@
-[
-  { "machine": "wet-etch", "label": "Bath control",  "target": "± 1 °C",              "current": "± 3 °C",      "sample": "yes" },
-  { "machine": "wet-etch", "label": "Oxide etch rate","target": "60 – 100 nm/min",    "current": "not measured","sample": "yes" },
-  { "machine": "wet-etch", "label": "Chemistries",   "target": "BOE, KOH, Al etch",   "current": "BOE only",    "sample": "yes" }
-]

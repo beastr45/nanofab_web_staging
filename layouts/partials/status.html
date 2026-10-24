@@ -1,38 +1,5 @@
-{{/* ==============================================================
-     BUILD STATE — a square tick plus a word.
-
-     CALL SIGNATURE (do not change — it is used across the site):
-       {{ partial "status.html" .Params.status }}
-
-     Pass the status string. Set "status:" in each file in
-     content/machines/ to one of:
-       operational — built, calibrated, and running
-       building    — in progress right now
-       planned     — scoped but not started
-
-     The tick is square, not a dot, and it never carries the meaning
-     on its own: the word is always there too (design-language §10).
-     The state vocabulary itself is fixed by §8.
-
-     A status word is machine data, so it is one of the few things
-     still set in mono (§3) — at 17px, with the old 0.18em marking
-     tracking retired.
-     ============================================================== */}}
+{{/* Build state: a square tick plus a word, never colour alone.
+     {{ partial "status.html" .Params.status }}  operational | building | planned */}}
 {{ $s := . | default "planned" }}
-{{ $label := "Planned" }}
-{{/* Planned reads as an empty graduation — a hairline outline with
-     nothing in it. */}}
-{{ $tick := "border border-muted" }}
-{{ $text := "text-muted" }}
-{{ if eq $s "operational" }}
-  {{ $label = "Operational" }}
-  {{ $tick = "bg-signal-green" }}
-  {{ $text = "text-signal-green" }}
-{{ else if eq $s "building" }}
-  {{ $label = "In build" }}
-  {{ $tick = "bg-signal-amber" }}
-  {{ $text = "text-signal-amber" }}
-{{ end }}
-<span class="inline-flex items-center gap-2.5 shrink-0 font-mono text-[1.0625rem] tracking-wide {{ $text }}">
-  <span class="block w-[0.5rem] h-[0.5rem] rounded-none shrink-0 {{ $tick }}" aria-hidden="true"></span>{{ $label }}
-</span>
+{{ $label := dict "operational" "Operational" "building" "In build" "planned" "Planned" }}
+<span class="status status--{{ $s }}"><i aria-hidden="true"></i>{{ index $label $s | default "Planned" }}</span>

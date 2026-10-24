@@ -1,0 +1,25 @@
+{{/* ==============================================================
+     Who leads each machine, read from data/officers.yaml and
+     data/leads.yaml. Returns a dict: normalised machine title ->
+     slice of names. Roles are matched to machine titles after
+     lowercasing and stripping punctuation; the alias table covers
+     the few roles that use a different name from the machine file.
+     ============================================================== */}}
+{{ $aliases := dict
+  "maskless photolithography stepper" "maskless litho stepper"
+  "spin coater"                       "spinner"
+  "alignment firmware"                "wafer stage alignment firmware"
+}}
+{{ $out := dict }}
+{{ range (append (default slice hugo.Data.officers) (default slice hugo.Data.leads)) }}
+  {{ $name := .name }}
+  {{ $roles := slice }}
+  {{ with .role }}{{ if reflect.IsSlice . }}{{ $roles = . }}{{ else }}{{ $roles = slice . }}{{ end }}{{ end }}
+  {{ range $roles }}
+    {{ $k := . | lower | replaceRE "[^a-z0-9]+" " " | strings.TrimSpace }}
+    {{ with index $aliases $k }}{{ $k = . }}{{ end }}
+    {{ $have := index $out $k | default slice }}
+    {{ if not (in $have $name) }}{{ $out = merge $out (dict $k ($have | append $name)) }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ return $out }}
