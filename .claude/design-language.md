@@ -1,219 +1,208 @@
-# MN NanoFab — design language
+# Minnesota Nanofabrication — design language
 
-Binding reference for anyone (human or agent) touching this site's
-front end. Read it before writing markup, CSS or copy. If something
-here conflicts with what you were asked to build, follow this file and
-say so in your report.
+Binding reference for anyone (human or agent) touching this site's front
+end, and for the docs book (`nanofab_docs`), which follows the same rules.
+Read it before writing markup, CSS or copy. If a request conflicts with this
+file, follow this file and say so.
 
-**This is revision 2. It reverses two rules from revision 1: the site
-is no longer dark, and small mono labels are no longer the house
-voice. If you remember those rules, forget them.**
+**Revision 3 (October 2026).** Replaces revision 2 entirely: the warm paper
+ground, Fraunces / Libre Franklin / Courier Prime, maroon accent and the
+"no navigation, huge presentation blocks" layout are all retired.
 
 ---
 
 ## 1. The idea
 
-**The site is an instrument, not a brochure.** A student club building
-a semiconductor fab out of ordinary lab space.
+**Stark, confident, editorial.** The references are
+[Stone Arch Silicon](https://stone-arch-silicon.github.io/stone-arch-silicon/)
+(structure, navigation, type, cards) and [Palantir](https://www.palantir.com/)
+(high contrast, black and white, nothing decorative). The site should read
+like a serious engineering organization that happens to be students.
 
-The reference is **SpaceX**: huge type, full-bleed photography of the
-real hardware, almost no interface, and very few words. Confident
-because it is specific, not because it is loud.
+**A visitor always knows where they are.** Every page has the persistent top
+navigation, a breadcrumb in its title block, and a full sitemap in the
+footer. Long pages add a sticky section bar. No page is a dead end.
 
-**Light, not dark.** Warm paper ground, black type, real photographs
-shown bright. The futuristic quality comes from scale, space and
-restraint — never from a dark theme, neon, or glow.
+**The main site is the front door; the docs are the workshop.** The website
+is short: who we are, every machine at a glance, the people, the blog, the
+sponsors. Long-form engineering (diagrams, schedules, calculations, assembly)
+lives in the mdBook docs site and is always one click away.
 
-**The single message is "Build the Fab."**
+## 2. Colour
 
-## 2. The deletion rule
+Mostly black and white. **UV purple comes from the club logo and is used
+only where something should pop.**
 
-This is the most important section. The site is being cut down, hard.
-
-> **Every element must carry information that appears nowhere else on
-> the page. If it repeats something, decorates something, or labels
-> something already obvious — delete it.**
-
-Apply it to words first, then to graphics. When you are unsure, delete.
-It is easier to add one thing back than to notice ten things that
-should have gone.
-
-**Delete on sight:**
-
-- Section "lead" paragraphs that restate the heading.
-- Eyebrows, kickers, and `01`/`02` index numerals used as decoration.
-- Any count shown twice on one page — pick the one place it means most.
-- Taglines *and* descriptions on the same object. Keep one.
-- Registration marks, corner ticks, measure rules, crosshairs,
-  decorative rules — all of it. A rule is allowed only when it
-  separates two things that would otherwise be confused.
-- Contents/index panels that duplicate the headings below them.
-- Breadcrumbs that repeat what the page title already says.
-- Keyboard legends, helper text, captions stating the obvious.
-- "Learn more", "Explore", "Read the docs" where the thing itself is
-  already a link.
-
-**Copy, specifically.** Cut every sentence to the shortest form that
-is still true. Fragments are good. Prefer three words to a sentence,
-and a word to three.
-
-- Not "Four bands divide the work: two generations of the process
-  line, the chemistry the line runs on, and the room around it. Every
-  machine below opens its own build documentation." → **"Four bands.
-  Nineteen machines."** or nothing at all.
-- Not "Simple, proven tools aimed at one outcome: a first working
-  device, end to end, on our own equipment." → **"First working
-  line."**
-- Not "Professor Cho has been advising the club since its founding,
-  his research focuses on semiconductor devices including 3D micro-
-  and nano-structures, and more information can be found on his
-  website listed below." → **"Semiconductor devices. 3D
-  nano-structures."**
-
-No hype words: supercharge, unlock, seamless, revolutionary,
-cutting-edge, empowering, journey, passionate. No exclamation marks.
-It is fine to say something is not built yet.
-
-## 3. Type — nothing small
-
-**The previous revision of this site was full of 11px labels. That was
-wrong. There is now a hard floor.**
-
-| Role | Size | Notes |
+| Token (CSS var) | Value | Use |
 |---|---|---|
-| Hero statement | `clamp(3.5rem, 12vw, 9rem)` | Fraunces, `tracking-tight` |
-| Section heading | `clamp(2.5rem, 5vw, 4rem)` | Fraunces |
-| Sub-heading | `1.5rem`–`2rem` | Fraunces |
-| Body | **`1.1875rem` (19px)** | Libre Franklin, `leading-relaxed` |
-| Secondary text | **`1.0625rem` (17px) minimum** | |
-| Label / mono | **`0.9375rem` (15px) minimum** | see below |
-| Legal / footer fine print | **`0.9375rem` (15px) floor** | |
+| `--black` | `#060607` | dark sections, hero, footer |
+| `--ink` | `#0d0d0e` | text on light; dark CTA block |
+| `--ink-2`, `--ink-3` | `#141416`, `#1d1e21` | raised tiles on dark |
+| `--white` | `#ffffff` | light sections |
+| `--paper`, `--paper-2` | `#f3f3f1`, `#e6e6e3` | alternate light section, grey CTA, tiles |
+| `--uv` | `#6d28d9` | accent on white/paper (7.1:1) |
+| `--uv-bright` | `#a78bfa` | accent on black (7.9:1) |
+| `--uv-deep` | `#42245f` | the logo's own purple; reference only |
+| `--uv-glow` | `124, 58, 237` | rgb triplet for the hero/page-hero glow |
 
-**Nothing on this site renders below 15px. No exceptions.** If a label
-does not survive at 15px, the label was not needed — delete it.
+Every section declares a theme: `.theme-dark`, `.theme-light` or
+`.theme-paper`. The theme sets `--bg --fg --muted --faint --line --line-2
+--tile --accent`. **Components read only those variables**, so a component
+works on any theme without changes. Never hard-code a hex in a component.
 
-Three families, already loaded. **Do not add or swap fonts.** Never
-Inter, Space Grotesk, Geist or JetBrains Mono — that set is the house
-style of every AI product page.
+### When purple is allowed
 
-- **Fraunces** (`font-display`) — headings. Tight tracking.
-- **Libre Franklin** (`font-body`) — everything else.
-- **Courier Prime** (`font-mono`) — **rare now.** Revision 1 used mono
-  markings everywhere and it became noise. Mono is for genuine machine
-  data only: a status word, a count, a spec value. Not for section
-  labels, not for eyebrows, not for nav. Tracking drops to `0.08em` —
-  the old `0.18em` marking style is retired.
+Purple is a signal, so it has to stay rare. Allowed:
 
-Headings do not end in periods.
+- **Hover / focus** on primary buttons, CTA blocks, links, pills.
+- **The current location**: active nav link underline, active sub-nav tab,
+  active mobile menu item, the active docs sidebar item.
+- **The eyebrow square** (7×7 px) in front of a section label.
+- **One word of the hero headline** ("fab.") and the full stop square after
+  the About statement.
+- **The glow**: a soft radial gradient in the top-right of the home hero and
+  inner page heroes. Never more than one glow per screen.
+- **Operational** build status (when a machine is running).
+- Bullet squares in long-form prose, the left rule on blockquotes and draft
+  warnings in the docs.
 
-## 4. Color
+Not allowed: purple backgrounds on resting elements, purple body text,
+purple headings, gradients other than the glow, more than one purple
+element competing in a single viewport at rest.
 
-Tokens live in `hugo.toml [params.colors]`, reaching Tailwind via
-`layouts/partials/head.html`. Use token names, never raw hex.
+## 3. Type
 
-| Token | Use |
+Two families, self-hosted from `static/fonts/` (SIL OFL): **Geist** for
+everything and **Geist Mono** for labels and data. Weights stay light:
+headings are 400, emphasis 450–500. Tight negative tracking on large type.
+
+| Role | Class | Size | Tracking |
+|---|---|---|---|
+| Home hero | `.hero-title` | `clamp(52px, 10vw, 176px)` | −0.06em |
+| Inner page title | `.page-title` | `clamp(44px, 6.4vw, 112px)` | −0.052em |
+| Statement | `.statement` | `clamp(34px, 5vw, 84px)` | −0.048em |
+| Section heading | `.h2` | `clamp(38px, 5vw, 80px)` | −0.045em |
+| Band heading | `.band-head h2` | `clamp(32px, 3.8vw, 60px)` | −0.045em |
+| Card / tile title | `.mcard-title`, `.path h3` | 24–36px | −0.035em |
+| Lead | `.lead`, `.hero-lead` | 17–21px, `--muted` | — |
+| Body | `body` | 17px (16px on phones) | −0.006em |
+| Long-form prose | `.prose` | 18px, line-height 1.7, max 68ch | — |
+| Label (mono) | `.eyebrow`, `.mcard-step`, `.f-h` | 11–12px uppercase | +0.10–0.14em |
+
+Mono labels are small on purpose: they are wayfinding, not reading. Anything
+a visitor must read (summaries, bios, body) is never below 15px.
+
+Headings don't end in full stops, **except** the big display statements
+(hero, page titles, section `.h2`), which are written as short sentences.
+
+## 4. Space and layout
+
+- Container: `.wrap`, max 1440px, gutter `--gut: clamp(16px, 4vw, 56px)`.
+- Section rhythm: `.sec` = `clamp(80px, 12vh, 152px)` top and bottom;
+  `.sec-tight` for closing bands.
+- Section header: `.sec-head` is a two-column grid: eyebrow across the top,
+  heading left, lead or a button right. It collapses to one column at 900px.
+- Corners are square. The only rounded things are portrait circles and the
+  footer pills.
+- Hairlines (`--line`, `--line-2`) separate things; no shadows, no cards
+  floating on shadows.
+- Breakpoints: 1280 (brand tag drops), 1180 (grids 4→2/3), 1023 (nav links
+  fold into the menu, machine grid 3→2), 900 (heads stack), 640 (phones:
+  single columns, 2-up team).
+
+## 5. Components
+
+**Header** (`partials/header.html`). Fixed, 72px (64px under 900px).
+Transparent over the dark hero, then frosted black or frosted white
+depending on the section underneath (`data-nav="dark|light"` on every
+section; `site.js` switches it). Brand left; links from `[menus.main]`, Docs
+(external, ↗) and the white "Join the club" button right. Under 1024px the
+links become a full-screen menu: numbered big links, plus Documentation and
+Connect columns. Esc closes it; focus is trapped while open.
+
+**Hero** (home). Full viewport, dark. The lab photograph in greyscale at low
+opacity, a bottom/left shade, the UV glow top-right, film grain. Eyebrow,
+headline with one purple word, lead and two buttons (solid + line), then a
+`.specs` row of four live facts that are also links. Counts are computed from
+content, never typed.
+
+**Page hero** (`partials/page-hero.html`). Every inner page opens with it:
+dark, faint 64px grid fading out, the glow, breadcrumb, title, lead,
+optional `.specs` row.
+
+**Sub-nav** (`.subnav`). Sticky under the header on long pages (Machines,
+Team). Numbered links to the page's sections; the one in view gets the
+purple underline and `aria-current="location"`. Horizontally scrollable on
+phones.
+
+**Buttons.** `.btn-solid` (fill = `--fg`) for the primary action,
+`.btn-line` (hairline) for the secondary. Arrow icon slides on hover; ↗ for
+external links. Solid buttons turn UV on hover. At most one solid button per
+group.
+
+**Directory tiles** (`.paths`). One bordered row of equal tiles; hover
+inverts to black with the "go" link in UV. Used for the bands on the home
+page.
+
+**Machine cards** (`partials/machine-card.html`). Hairline grid, three
+across. Mono "Process · Step" label and build status on top, name, one-line
+summary, "+ Read more". The top of the card is a real `<button>` with
+`aria-expanded` and `aria-controls`; opening a card makes it span the row
+and shows the member's Markdown, a facts list (process, step, build, lead,
+part-of) and "Full documentation ↗". `#slug` in the URL opens that card.
+Without JavaScript all cards render open.
+
+**Status** (`partials/status.html`). A 7px square plus a word, never colour
+alone: Planned (hollow), In build (filled `--fg`), Operational (filled UV).
+
+**People.** Circular greyscale portraits that turn to colour on hover; name
+in Geist, roles in small mono caps. Machine roles link to the machine card.
+
+**News list** (`.news`). Date/kicker in mono, title large, arrow right; a
+hairline draws across under the row on hover. Used for the blog.
+
+**CTA blocks** (`.cta-block`). Huge type, full width; dark and grey
+variants, both turn UV on hover. One pair per page at most, at the end.
+
+**Footer.** Dark. Brand and blurb, Explore / Docs / Connect columns, the
+giant wordmark fitted to the width, then the University's required legal
+block **last**, on its own (README, "UMN branding rules").
+
+## 6. Motion
+
+Short and quiet: `--ease: cubic-bezier(.2,.7,.2,1)`, 0.2–0.8s. Sections fade
+up once as they enter (`.reveal`). Arrows nudge on hover. Nothing loops,
+nothing autoplays. `prefers-reduced-motion` turns it all off.
+
+## 7. Copy
+
+- Short, specific, true. Say what something is; skip hype words
+  (revolutionary, seamless, cutting-edge, unlock, journey, passionate).
+- **Never publish a number the team did not choose or measure.** Targets are
+  labelled as targets. This is why the generated machine drafts were taken
+  off the site and appear in the docs only under a warning.
+- No exclamation marks. It is fine to say something is not built yet.
+
+## 8. Accessibility
+
+- Text contrast: `--muted` on white is 7:1, on black 8:1+. UV tokens were
+  chosen for ≥7:1 on their ground.
+- Every interactive element is a link or a button and shows a 2px UV focus
+  ring (`:focus-visible`).
+- Skip link to `#main` on every page. Decorative images have `alt=""`.
+- Status is never colour alone; expanded state is in `aria-expanded`.
+
+## 9. Files
+
+| What | Where |
 |---|---|
-| `paper` `#F4F3F0` | the ground for the whole site |
-| `surface` `#FFFFFF` | raised panels, sparingly |
-| `ink` `#14181C` | all body text |
-| `muted` | secondary text — must still pass contrast at 17px |
-| `line` | hairlines |
-| `maroon` `#7A0019` | **the only accent.** Links, hover, emphasis |
-| `signal-green` / `signal-amber` | build status only |
+| All styles (source) | `tailwind-input.css` (component layer on CSS variables) |
+| Built stylesheet (committed) | `static/css/site.css` — `npm run build:css` |
+| Tailwind config, safelist | `tailwind.config.js` |
+| Behaviour | `static/js/site.js` |
+| Fonts | `static/fonts/` |
+| Docs theme | `nanofab_docs/theme/nanofab.css` (same tokens) |
 
-- **One accent.** If something needs emphasis and is not a link, give
-  it size or space, not another color.
-- `gold` is demoted: status and small emphasis only, never a fill
-  behind text, never decorative rules.
-- `void` tokens survive only for the footer. Nothing else is dark.
-- `violet`, `blueprint` and `faint` are retired. Do not use them.
-
-## 5. Photography
-
-Photographs of the real lab are the main visual, and they are shown
-**bright and legible**. The hero is a photograph of the fab, full
-bleed, and you must be able to see the room.
-
-- No global darkening. No heavy scrim. Revision 1 pushed the hero
-  photo to 50% brightness and it read as a dark theme — that is
-  exactly what we are undoing.
-- Mild correction is fine: slight desaturation, slight contrast.
-- If white type will not sit on the photograph, **move the type**,
-  place it on the paper ground, or apply a scrim to the smallest
-  possible region — do not dim the whole image.
-- Figures and diagrams render on `surface` with a hairline, no frame
-  decoration.
-
-## 6. Geometry, space and scroll
-
-- **Corners square.** `rounded-none`. 2px is the absolute maximum, and
-  needs a reason.
-- **No `box-shadow` anywhere.** `system.css` enforces this globally.
-- No gradients, glassmorphism, blur, or glow. The one permitted
-  exception is the top bar's scrolled background.
-- **Scroll must feel continuous.** Sections flow into one another on
-  the same ground. Do not box sections, alternate background tints, or
-  stack bordered panels — those read as separate pages glued together.
-  One vertical rhythm down the whole document: `py-28` mobile,
-  `py-40` desktop, and the same left margin everywhere so content
-  edges line up as you scroll.
-- Full-bleed photography is the only thing that may break the measure.
-- Content max width `max-w-6xl`; prose `max-w-2xl`.
-
-## 7. Motion
-
-- 200–300ms, `ease-out`. Only `opacity`, `transform`, `width`.
-- No bounce, spring, parallax, or scroll-jacking.
-- `prefers-reduced-motion: reduce` must disable transitions and stop
-  any marquee outright.
-
-## 8. Structure
-
-Four bands, defined in `data/bands.yaml` — the top level of the
-homepage, the menu, `/machines/` and search:
-
-| Band | Second level |
-|---|---|
-| Gen 1 | patterning, doping, deposition, metrology |
-| Gen 2 | patterning, deposition, metrology, application |
-| ChemE R&D | flat |
-| Logistics | flat |
-
-Machines declare `band:` and (Gen 1 / Gen 2 only) `process:` in front
-matter. **Never hard-code band or machine lists** — read
-`hugo.Data.bands` and filter `site.RegularPages`. Adding a machine must
-mean editing exactly one markdown file.
-
-Build state vocabulary: `operational`, `building` ("In build"),
-`planned`, via `layouts/partials/status.html`.
-
-## 9. CSS ownership
-
-Tailwind runs from the CDN, configured in `head.html`. Component CSS
-is split one file per area so concurrent work never collides. Write
-only into your own file.
-
-| File | Owns |
-|---|---|
-| `static/css/styles.css` | legacy, loaded first; leave alone |
-| `static/css/system.css` | tokens, resets, shared primitives |
-| `static/css/shell.css` | top bar, full-screen menu, search |
-| `static/css/hero.css` | hero |
-| `static/css/bands.css` | band section, machines index |
-| `static/css/people.css` | team, advisors |
-| `static/css/doc.css` | machine documentation pages |
-| `static/css/footer.css` | footer, sponsors |
-
-Prefer Tailwind utilities in markup; use the CSS file for what the CDN
-build cannot express (`:has()`, keyframes, reduced motion, multi-element
-hover).
-
-## 10. Accessibility
-
-- Visible focus ring on every interactive element: 1px `maroon`
-  outline, 2px offset.
-- The 15px floor in §3 is partly an accessibility rule. Keep it.
-- Full-screen menu traps focus, closes on `Esc`, works without JS.
-- Real `alt` on content images; `aria-hidden` on decorative marks —
-  though after §2 there should be almost no decorative marks left.
-- Never rely on color alone: status pairs a mark with a word.
+After changing a template or `tailwind-input.css`, run `npm run build:css`
+and commit `static/css/site.css` with your change. A class added only by
+JavaScript must be listed in the `safelist` in `tailwind.config.js`.
