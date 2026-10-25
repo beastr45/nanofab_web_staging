@@ -235,7 +235,7 @@ nothing autoplays. `prefers-reduced-motion` turns it all off.
 | Tailwind config, safelist | `tailwind.config.js` |
 | Behaviour | `static/js/site.js` |
 | Fonts | `static/fonts/` |
-| Docs theme | `nanofab_docs/theme/nanofab.css` (same tokens) |
+| Docs theme | `nanoTheme_staging/nanofab.css` (same tokens, mounted as `theme/` in the docs book) |
 
 After changing a template or `tailwind-input.css`, run `npm run build:css`
 and commit `static/css/site.css` with your change. A class added only by

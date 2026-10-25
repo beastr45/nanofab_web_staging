@@ -2,7 +2,7 @@
 title: "PVD & Vacuum System"
 band: "gen1"
 process: "deposition"
-partOf: "dc-magnetron-sputterer"
+partOf: "sputterer"
 step: "Vacuum & Process"
 status: "building"
 weight: 20

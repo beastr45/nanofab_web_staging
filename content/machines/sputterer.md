@@ -1,5 +1,5 @@
 ---
-title: "DC Magnetron Sputterer"
+title: "Sputterer"
 band: "gen1"
 process: "deposition"
 step: "Metal Films"

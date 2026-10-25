@@ -103,20 +103,7 @@
         via(end[0], end[1]);
       }
     }
-    // a rail: one long vertical run in the margin, with short taps
-    function rail(side, y, room) {
-      var x = side < 0 ? 8 + R() * (room - 16) : W - 8 - R() * (room - 16);
-      var len = 120 + R() * 280, taps = 1 + Math.floor(R() * 3);
-      trace([[x, y], [x, y + len]], y, 'c-rail');
-      via(x, y); via(x, y + len);
-      for (var t = 0; t < taps; t++) {
-        var ty = y + (t + 1) * len / (taps + 1), dir = side < 0 ? 1 : -1;
-        var tl = Math.min(room - Math.abs(x - (side < 0 ? 0 : W)) - 6, 14 + R() * 60);
-        if (tl > 10) { trace([[x, ty], [x + dir * tl, ty]], ty); via(x + dir * tl, ty); }
-      }
-    }
-
-    // walk down the page; each step may drop a bus or a rail on each side
+    // walk down the page; each step may drop a bus on each side
     var y = 120;
     while (y < fTop - 80) {
       var d = depth(y), step = 380 - 200 * d;
@@ -125,7 +112,7 @@
         var yy = y + R() * step;
         if (yy > fTop - 80) return;
         var room = reach(yy);
-        if (R() < 0.75 || room < 36) bus(side, yy, room); else rail(side, yy, room);
+        bus(side, yy, room);
       });
       y += step;
     }

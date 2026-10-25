@@ -452,7 +452,6 @@
   main .wrap { position: relative; z-index: 2; }
   .c-board { --c: #8b5cf6; opacity: .32; }
   .c-trace { fill: none; stroke: var(--c); stroke-width: 1.2; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.4s var(--ease); }
-  .c-rail { stroke-width: 1.2; }
   .c-trace.on { stroke-dashoffset: 0; }
   .c-via { opacity: 0; fill: none; stroke: var(--c); stroke-width: 1.2; transition: opacity .6s var(--ease) .5s; }
   .c-via.on { opacity: 1; }

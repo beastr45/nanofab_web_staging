@@ -6,10 +6,9 @@ empty. How to make each change: [EDITING.md](EDITING.md).
 
 ## Settings (`hugo.toml`)
 
-- [ ] **`docsURL`**: set to `https://minnesota-nanofabrication-club.github.io/nanofab_docs/`
-      as a guess. Point it at the real documentation site (the club's
-      existing mdBook site, or `nanofab_docs` once published). Every "Docs"
-      link and every machine card's "Full documentation" button uses it.
+- [ ] **`docsURL`**: points at the staging docs,
+      `https://beastr45.github.io/nano-book_staging/`. Change it to the
+      club's docs site when the staging repos move over.
 - [x] **`contactEmail`**: now `nanoclub@umn.edu`. Confirm the address exists
       and someone reads it. It is behind "Get in touch" and "Become a
       sponsor".
@@ -79,16 +78,13 @@ empty. How to make each change: [EDITING.md](EDITING.md).
 - [ ] **`sponsors.yaml`**: confirm each description says what that sponsor
       actually does with the club.
 
-## Documentation site (`../nanofab_docs`, separate repository)
+## Documentation site (`../nano-book_staging`, theme in `../nanoTheme_staging`)
 
-- [ ] **Decide which docs site is canonical.** There is already a club mdBook
-      site; `nanofab_docs` was created separately during the redesign.
-      Merge its machine pages and theme into the existing one, or replace
-      it. Then set `docsURL` above.
-- [ ] **Review 16 draft machine pages** marked "Draft, not yet reviewed by
-      the team". Numbers the team hadn't chosen were removed, so expect gaps.
-- [ ] **PVD & Vacuum** docs page is an empty outline.
-- [ ] **Publish it** (it has a GitHub Pages workflow, but no GitHub remote yet).
+- [ ] **Write the machine pages.** Every machine on the website has a page
+      there, but all except the sputterer are stubs.
+- [ ] **Move off staging.** The docs' `book.toml`, `.gitmodules` and
+      `theme/header.hbs` point at the staging forks (docs README, "Moving
+      from staging").
 
 ## Before going public
 

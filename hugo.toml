@@ -104,7 +104,7 @@ disableKinds = ["taxonomy", "term"]
   # link in the navigation points here, and every machine card links
   # to  docsURL + docsMachinePath + <machine file name> + ".html".
   # A machine can override its link with `docs:` in its front matter.
-  docsURL = "https://minnesota-nanofabrication-club.github.io/nanofab_docs/"
+  docsURL = "https://beastr45.github.io/nano-book_staging/"
   docsMachinePath = "machines/"
 
   # ---------------- Logo ----------------
