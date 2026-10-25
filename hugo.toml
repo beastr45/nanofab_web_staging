@@ -69,8 +69,8 @@ disableKinds = ["taxonomy", "term"]
 
   # The one-line headline on the homepage hero. A full stop at the end
   # is drawn in the accent colour.
-  heroTitle = "Bare wafer to working chip."
-  heroLead = "We are engineering undergraduates at the University of Minnesota building a nanofabrication facility from scratch. Every machine is designed, assembled, tested and documented by students."
+  heroTitle = "We are building a fab"
+  heroLead = "MNF is a team of undergrads building a nanofabrication facility from scratch. Every machine is designed, assembled, tested and documented by students."
 
   googleSiteVerification = ""
 

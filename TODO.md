@@ -10,7 +10,7 @@ empty. How to make each change: [EDITING.md](EDITING.md).
       as a guess. Point it at the real documentation site (the club's
       existing mdBook site, or `nanofab_docs` once published). Every "Docs"
       link and every machine card's "Full documentation" button uses it.
-- [ ] **`contactEmail`**: now `nanoclub@umn.edu`. Confirm the address exists
+- [x] **`contactEmail`**: now `nanoclub@umn.edu`. Confirm the address exists
       and someone reads it. It is behind "Get in touch" and "Become a
       sponsor".
 - [ ] **`heroTitle` / `heroLead`**: the new headline is "Bare wafer to working
