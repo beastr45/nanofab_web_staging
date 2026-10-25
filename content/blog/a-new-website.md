@@ -33,4 +33,4 @@ Everything you would want to change is a small text file:
 - **People, advisors and sponsors** are lists in `data/officers.yaml`, `data/leads.yaml`, `data/advisors.yaml` and `data/sponsors.yaml`.
 - **Documentation** is a Markdown page in the docs repository. Every page there has an edit button.
 
-The README in the website repository walks through each one. If something is wrong or missing, tell us on [Discord](https://discord.gg/G9T6bk84w), or fix it and open a pull request.
+The README in the website repository walks through each one. If something is wrong or missing, tell us on [Discord](https://discord.gg/JXfFCyUDd7), or fix it and open a pull request.
