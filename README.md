@@ -328,7 +328,7 @@ end of their group).
 background), `url`, optional `linkLabel`. Logos show in greyscale and turn to
 colour on hover.
 
-**Photos.** Square-ish headshots work best; they are cropped to circles.
+**Photos.** Square-ish headshots work best; they are cropped square.
 Name files in lowercase with hyphens and no spaces. Keep them under ~300 KB.
 
 ---
@@ -374,6 +374,14 @@ npm run build:css    # or: npm run watch:css while you work
 Commit the rebuilt `static/css/site.css` together with your change. Classes
 that only JavaScript adds must be listed in `safelist` in
 `tailwind.config.js`, or the build drops them.
+
+### The circuitry
+
+The traces and chip parts along the sides of every page, and the fade to
+purple above the footer, are drawn by `static/js/circuit.js` (comments at
+the top explain it). Colours and strength are the `.c-*` rules in
+`tailwind-input.css`. To turn it off, delete the `circuit.js` line in
+`layouts/_default/baseof.html`.
 
 Fonts are IBM Plex Sans and IBM Plex Mono, self-hosted in `static/fonts/`
 (SIL Open Font License, `static/fonts/IBM-Plex-OFL.txt`).

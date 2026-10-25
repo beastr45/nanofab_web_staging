@@ -16,9 +16,8 @@ ground, Fraunces / Libre Franklin / Courier Prime, maroon accent and the
 **Stark, confident, editorial.** A merge of three references, a copy of
 none:
 
-- [ASIC Network](https://asicnetwork.net/): the floating, rounded header
-  bar; pill buttons with a round arrow badge; pill labels; rounded cards
-  separated by gaps.
+- [ASIC Network](https://asicnetwork.net/): the floating header bar;
+  buttons with an arrow badge; outlined labels; cards separated by gaps.
 - [Palantir](https://www.palantir.com/): stark black and white, big
   photography, a row of tab chips for moving around a long page.
 - [Stone Arch Silicon](https://stone-arch-silicon.github.io/stone-arch-silicon/):
@@ -81,7 +80,7 @@ Purple is a signal, so it has to stay rare. Allowed:
 - Bullet dots in long-form prose, the left rule on blockquotes and draft
   warnings in the docs.
 
-Not allowed: purple backgrounds on resting elements, purple body text,
+Not allowed (except the footer flood, see "The circuitry"): purple backgrounds on resting elements, purple body text,
 purple headings, gradients other than the glow, more than one purple
 element competing in a single viewport at rest.
 
@@ -118,10 +117,19 @@ Headings don't end in full stops, **except** the big display statements
   `.sec-tight` for closing bands.
 - Section header: `.sec-head` is a two-column grid: eyebrow across the top,
   heading left, lead or a button right. It collapses to one column at 900px.
-- **Shape.** Panels are rounded and separated by gaps (`--r-sm` 10px for
-  small things, `--r` 16px for the header and tiles, `--r-lg` 24px for
-  cards and big panels). Controls are pills (`999px`); icon buttons,
-  badges, status dots and portraits are circles.
+- **Shape.** Square-cut, like a die: formal, not soft. Panels are separated
+  by gaps; `--r-sm` is 0 and `--r` / `--r-lg` are a 2px hairline softening
+  only. Buttons, badges, chips and portraits are square. The only round
+  things are small dots (status, bullets, the active-link dot, the
+  headline's full stop), which read as vias.
+- **The circuitry** (`static/js/circuit.js`). Traces, vias, bond pads, dies
+  and alignment marks drawn into one SVG behind the content. Near the top
+  they stay in the side margins; down the page they get denser and reach
+  further in (anything inside the content column is drawn at half
+  strength). Each piece draws itself as it scrolls into view. Over the
+  last stretch before the footer the page floods with UV, and the footer
+  is solid UV (`.theme-uv`, `--fab`) with faint white circuitry. This is
+  the one sanctioned exception to "no purple backgrounds".
 - Hairlines (`--line`, `--line-2`) are card borders and dividers. Shadows
   only on things that float: the header and tab bar on light sections, and
   a hovered machine card.
