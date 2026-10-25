@@ -16,8 +16,7 @@ ground, Fraunces / Libre Franklin / Courier Prime, maroon accent and the
 **Stark, confident, editorial.** A merge of three references, a copy of
 none:
 
-- [ASIC Network](https://asicnetwork.net/): the floating header bar;
-  buttons with an arrow badge; outlined labels; cards separated by gaps.
+- [ASIC Network](https://asicnetwork.net/): buttons with an arrow badge; outlined labels; cards separated by gaps.
 - [Palantir](https://www.palantir.com/): stark black and white, big
   photography, a row of tab chips for moving around a long page.
 - [Stone Arch Silicon](https://stone-arch-silicon.github.io/stone-arch-silicon/):
@@ -129,9 +128,8 @@ Headings don't end in full stops, **except** the big display statements
   little further in (inside the content column, half strength). Each
   trace draws itself as it scrolls into view. Keep it quiet: if it is
   the first thing you notice on a page, it is too strong.
-- Hairlines (`--line`, `--line-2`) are card borders and dividers. Shadows
-  only on things that float: the header and tab bar on light sections, and
-  a hovered machine card.
+- Hairlines (`--line`, `--line-2`) are card borders and dividers. The only
+  shadow is on a hovered machine card.
 - **Numbers only in the menu.** The full-screen menu numbers its links
   01–06 in navigation order. Nothing else is numbered, so nothing can
   disagree with it.
@@ -141,9 +139,11 @@ Headings don't end in full stops, **except** the big display statements
 
 ## 5. Components
 
-**Header** (`partials/header.html`). A rounded bar floating `--nav-gap`
-(10px) from the top and sides, 64px tall (60px under 900px), as wide as the
-content. Glassy over the dark hero, then frosted black or frosted white
+**Header** (`partials/header.html`). A full-width bar flush with the top
+of the window (`--nav-gap` is 0), 64px tall (60px under 900px), with a
+hairline along its bottom; its contents line up with the content column.
+The tab bar on /machines/ and /team/ is the same kind of bar and sticks
+directly under it. Glassy over the dark hero, then frosted black or frosted white
 depending on the section underneath (`data-nav="dark|light"` on every
 section; `site.js` switches it). Brand left (logo, name, and a small mono line "Student club · University of
 Minnesota" under it); links from `[menus.main]`, Docs (external, ↗), the
