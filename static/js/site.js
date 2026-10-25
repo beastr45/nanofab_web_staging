@@ -175,18 +175,5 @@
     $$('.reveal').forEach(function (el) { el.classList.add('in'); });
   }
 
-  /* ---------- footer wordmark fits its container ---------- */
-  var wm = $('#wordmark');
-  function fit() {
-    if (!wm) return;
-    var span = wm.firstElementChild;
-    wm.style.fontSize = '100px';
-    var w = span.getBoundingClientRect().width;
-    if (w > 0) wm.style.fontSize = (100 * wm.clientWidth / w * 0.99) + 'px';
-  }
-  addEventListener('resize', fit);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-  fit();
-
   if (nav) onScroll();
 })();

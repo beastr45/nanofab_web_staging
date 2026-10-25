@@ -49,13 +49,13 @@
 {{/* ---------------- /01 ABOUT ---------------- */}}
 <section class="sec theme-light" id="about" data-nav="light">
   <div class="wrap">
-    <p class="eyebrow reveal"><span class="idx">01</span> About</p>
+    <p class="eyebrow reveal">About</p>
     <p class="statement reveal">Almost nobody gets to build a chip fab as an undergraduate. So we are building one<span class="dot" aria-hidden="true"></span></p>
     <div class="paths">
       {{ range $i, $b := $bands }}
       {{ $n := len (where $machines "Params.band" $b.slug) }}
       <a class="path reveal" href="{{ $machinesURL }}#{{ $b.slug }}">
-        <span class="idx"><span>Band {{ printf "%02d" (add $i 1) }}</span><span>{{ $n }} machines</span></span>
+        <span class="idx"><span>{{ $n }} machines</span></span>
         <h3>{{ $b.name }}</h3>
         {{ with $b.tagline }}<p>{{ . }}</p>{{ end }}
         <span class="go">See the machines {{ partial "icon.html" "arrow" }}</span>
@@ -63,7 +63,7 @@
       {{ end }}
       {{ with $docs }}
       <a class="path reveal" href="{{ . }}" target="_blank" rel="noopener">
-        <span class="idx"><span>Docs</span><span>External</span></span>
+        <span class="idx"><span>External site</span></span>
         <h3>Documentation</h3>
         <p>How every machine works, how it is built, and how to help.</p>
         <span class="go">Open the docs {{ partial "icon.html" "ne" }}</span>
@@ -77,7 +77,7 @@
 <section class="sec theme-dark" id="team" data-nav="dark">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal"><span class="idx">02</span> Team</p>
+      <p class="eyebrow reveal">Team</p>
       <h2 class="h2 reveal">The people who run the club.</h2>
       <div class="sec-aside reveal"><a class="btn btn-line" href="{{ "team/" | relURL }}">Full team and advisors {{ partial "icon.html" "arrow" }}</a></div>
     </div>
@@ -100,7 +100,7 @@
 <section class="sec theme-light" id="blog" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal"><span class="idx">03</span> Blog</p>
+      <p class="eyebrow reveal">Blog</p>
       <h2 class="h2 reveal">From the lab.</h2>
       <div class="sec-aside reveal"><a class="btn btn-line" href="{{ "blog/" | relURL }}">All posts {{ partial "icon.html" "arrow" }}</a></div>
     </div>
@@ -117,7 +117,7 @@
 <section class="sec theme-paper" id="sponsors" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow reveal"><span class="idx">04</span> Sponsors</p>
+      <p class="eyebrow reveal">Sponsors</p>
       <h2 class="h2 reveal">Built with our partners.</h2>
       <p class="lead reveal">Their engineers review our designs and their parts are in our machines.</p>
     </div>

@@ -25,14 +25,14 @@
 {{ partial "page-hero.html" (dict "page" . "eyebrow" "Machines" "title" "The machines." "lead" .Params.lead "specs" $specs) }}
 
 <nav class="subnav" aria-label="Bands">
-  <div class="wrap subnav-inner">
-    {{ range $i, $b := $bands }}
-    <a href="#{{ $b.slug }}" data-spy="{{ $b.slug }}"><span class="idx">{{ printf "%02d" (add $i 1) }}</span>{{ $b.name }}</a>
+  <div class="wrap"><div class="subnav-inner">
+    {{ range $b := $bands }}
+    <a href="#{{ $b.slug }}" data-spy="{{ $b.slug }}">{{ $b.name }}</a>
     {{ end }}
     <div class="subnav-tools">
       <button class="btn btn-line btn-sm" type="button" data-expand-all aria-pressed="false">Open all</button>
     </div>
-  </div>
+  </div></div>
 </nav>
 
 <section class="sec theme-light" data-nav="light" style="padding-top:0">

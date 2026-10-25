@@ -3,21 +3,21 @@
      data/advisors.yaml. A sticky bar jumps between the groups. */}}
 {{ partial "page-hero.html" (dict "page" . "title" "The people building the fab." "lead" .Params.lead) }}
 <nav class="subnav" aria-label="Team sections">
-  <div class="wrap subnav-inner">
-    <a href="#people" data-spy="people"><span class="idx">01</span>Students</a>
-    <a href="#advisors" data-spy="advisors"><span class="idx">02</span>Advisors</a>
-  </div>
+  <div class="wrap"><div class="subnav-inner">
+    <a href="#people" data-spy="people">Students</a>
+    <a href="#advisors" data-spy="advisors">Advisors</a>
+  </div></div>
 </nav>
 <section class="sec theme-light" id="people" data-nav="light" style="padding-top:clamp(40px,6vh,72px)">
   <div class="wrap">
-    <p class="eyebrow"><span class="idx">01</span> Students</p>
+    <p class="eyebrow">Students</p>
     {{ partial "people.html" . }}
   </div>
 </section>
 <section class="sec theme-paper" id="advisors" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow"><span class="idx">02</span> Advisors</p>
+      <p class="eyebrow">Advisors</p>
       <h2 class="h2">Faculty and staff advisors.</h2>
       <p class="lead">They review our designs, lend their labs' experience, and keep the work honest.</p>
     </div>

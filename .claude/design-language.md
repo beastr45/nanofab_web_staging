@@ -13,12 +13,20 @@ ground, Fraunces / Libre Franklin / Courier Prime, maroon accent and the
 
 ## 1. The idea
 
-**Stark, confident, editorial.** The references were
-[Stone Arch Silicon](https://stone-arch-silicon.github.io/stone-arch-silicon/)
-(structure, navigation, cards) and [Palantir](https://www.palantir.com/)
-(high contrast, black and white, nothing decorative). The site must not read
-as a copy of either: it has its own type (IBM Plex, set light), its own
-marker and one quiet motif of its own (below).
+**Stark, confident, editorial.** A merge of three references, a copy of
+none:
+
+- [ASIC Network](https://asicnetwork.net/): the floating, rounded header
+  bar; pill buttons with a round arrow badge; pill labels; rounded cards
+  separated by gaps.
+- [Palantir](https://www.palantir.com/): stark black and white, big
+  photography, a row of tab chips for moving around a long page.
+- [Stone Arch Silicon](https://stone-arch-silicon.github.io/stone-arch-silicon/):
+  restraint, persistent wayfinding, and the events calendar.
+
+What is ours: IBM Plex set light, the UV accent from the logo, and the
+alignment-mark motif. Things that read as SASI and are deliberately gone:
+hairline grids of square cards, square markers, the full-width wordmark.
 
 **One motif: the alignment mark.** A lithography alignment cross, the thing
 every mask layer is lined up against. It appears as the eyebrow marker, the
@@ -70,7 +78,7 @@ Purple is a signal, so it has to stay rare. Allowed:
 - **The glow**: a soft radial gradient in the top-right of the home hero and
   inner page heroes. Never more than one glow per screen.
 - **Operational** build status (when a machine is running).
-- Bullet squares in long-form prose, the left rule on blockquotes and draft
+- Bullet dots in long-form prose, the left rule on blockquotes and draft
   warnings in the docs.
 
 Not allowed: purple backgrounds on resting elements, purple body text,
@@ -110,18 +118,25 @@ Headings don't end in full stops, **except** the big display statements
   `.sec-tight` for closing bands.
 - Section header: `.sec-head` is a two-column grid: eyebrow across the top,
   heading left, lead or a button right. It collapses to one column at 900px.
-- Corners are square. The only rounded things are portrait circles and the
-  footer pills.
-- Hairlines (`--line`, `--line-2`) separate things; no shadows, no cards
-  floating on shadows.
+- **Shape.** Panels are rounded and separated by gaps (`--r-sm` 10px for
+  small things, `--r` 16px for the header and tiles, `--r-lg` 24px for
+  cards and big panels). Controls are pills (`999px`); icon buttons,
+  badges, status dots and portraits are circles.
+- Hairlines (`--line`, `--line-2`) are card borders and dividers. Shadows
+  only on things that float: the header and tab bar on light sections, and
+  a hovered machine card.
+- **Numbers only in the menu.** The full-screen menu numbers its links
+  01–06 in navigation order. Nothing else is numbered, so nothing can
+  disagree with it.
 - Breakpoints: 1180 (grids 4→2/3), 1023 (nav text links fold into the
   menu, machine grid 3→2), 900 (heads stack), 640 (phones: single columns,
   2-up team, "Join the club" shortens to "Join"), 520 (brand tag drops).
 
 ## 5. Components
 
-**Header** (`partials/header.html`). Fixed, 72px (64px under 900px).
-Transparent over the dark hero, then frosted black or frosted white
+**Header** (`partials/header.html`). A rounded bar floating `--nav-gap`
+(10px) from the top and sides, 64px tall (60px under 900px), as wide as the
+content. Glassy over the dark hero, then frosted black or frosted white
 depending on the section underneath (`data-nav="dark|light"` on every
 section; `site.js` switches it). Brand left (logo, name, and a small mono line "Student club · University of
 Minnesota" under it); links from `[menus.main]`, Docs (external, ↗), the
@@ -164,7 +179,7 @@ moves the 4:3 picture to the left of the title, and shows the member's Markdown,
 part-of) and "Full documentation ↗". `#slug` in the URL opens that card.
 Without JavaScript all cards render open.
 
-**Status** (`partials/status.html`). A 7px square plus a word, never colour
+**Status** (`partials/status.html`). A 7px dot plus a word, never colour
 alone: Planned (hollow), In build (filled `--fg`), Operational (filled UV).
 
 **People.** Circular greyscale portraits that turn to colour on hover; name
@@ -173,11 +188,11 @@ in Geist, roles in small mono caps. Machine roles link to the machine card.
 **News list** (`.news`). Date/kicker in mono, title large, arrow right; a
 hairline draws across under the row on hover. Used for the blog.
 
-**CTA blocks** (`.cta-block`). Huge type, full width; dark and grey
+**CTA blocks** (`.cta-block`). Two rounded panels side by side (stacked
+on phones), large light type and a round arrow badge; dark and grey
 variants, both turn UV on hover. One pair per page at most, at the end.
 
-**Footer.** Dark. Brand and blurb, Explore / Docs / Connect columns, the
-giant wordmark fitted to the width, then the University's required legal
+**Footer.** Dark. Brand and blurb, Explore / Docs / Connect columns, then the University's required legal
 block **last**, on its own (README, "UMN branding rules").
 
 ## 6. Motion
@@ -223,7 +238,7 @@ JavaScript must be listed in the `safelist` in `tailwind.config.js`.
 
 **Folding bands** (`/machines/`). Each band heading is a `<button>` inside
 the `<h2>` (`aria-expanded`, `aria-controls` the band's card grid), with the
-machine count and a square chevron on the right. Gen One starts open, the
+machine count and a round chevron on the right. Gen One starts open, the
 others closed. A closed band's rule turns to `--line-2`.
 
 **Incubator** (bottom of `/machines/`). Deliberately small: one paper box,
