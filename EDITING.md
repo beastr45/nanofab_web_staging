@@ -213,6 +213,12 @@ The line drawing that was there is replaced.
 Copy a block in `data/sponsors.yaml`. Put the logo in
 `static/images/sponsors/` (trimmed tight, transparent background).
 
+### Add an event
+
+Add it to the club's Google Calendar. That's it: /events/ and everyone who
+subscribed pick it up. (The website only needs `calendarID` set once; see
+README, "Events and the calendar".)
+
 ### Change the homepage headline, links or email
 
 Open `hugo.toml`:
@@ -221,6 +227,9 @@ Open `hugo.toml`:
 - `heroImage`: the photo behind it.
 - `discordURL`, `instagramURL`, `linkedinURL`, `githubURL`, `contactEmail`.
 - `docsURL`: where the documentation site lives.
+- `incubatorFormURL`: the "Propose a project" form at the bottom of /machines/.
+- `calendarID`, `calendarAPIKey`, `eventsLocation`: the /events/ page.
+- `fabWidget`: `false` hides the "Our logo, fabricated" animation.
 - `[[menus.main]]` blocks: the links in the top bar.
 
 ---

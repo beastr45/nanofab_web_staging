@@ -2,10 +2,11 @@
 {{/* ==============================================================
      THE HOMEPAGE
        hero      the lab, the goal, two ways in, live counts
-       /01 About what the club is, and one tile per band of the fab
-       /02 Team  the officers (full roster on /team/)
-       /03 Blog  latest posts
-       /04 Sponsors
+       01 About  what the club is, and one tile per band of the fab
+       process   "Our logo, fabricated" (fab-widget.html; hugo.toml fabWidget)
+       02 Team   the officers (full roster on /team/)
+       03 Blog   latest posts (only once a post is published)
+       04 Sponsors
        closing   Join / Get in touch
      Every number is counted from content at build time.
      ============================================================== */}}
@@ -25,8 +26,8 @@
     <div class="hero-shade"></div>
     <div class="grain"></div>
   </div>
-  {{/* Wafer-style alignment marks in the hero's top corners, with the lab's coordinates. Decoration only. */}}
-  <div class="reg" aria-hidden="true"><i></i><i></i><span>44.974° N · 93.232° W</span></div>
+  {{/* Alignment-mark brackets in the hero's top corners. Decoration only. */}}
+  <div class="reg" aria-hidden="true"><i></i><i></i></div>
   <div class="wrap">
     <p class="eyebrow">A student-built semiconductor fab</p>
     <h1 class="hero-title">{{ if $stop }}{{ strings.TrimSuffix "." $title }}<span class="uv">.</span>{{ else }}{{ $title }}{{ end }}</h1>
@@ -63,7 +64,7 @@
       {{ end }}
       {{ with $docs }}
       <a class="path reveal" href="{{ . }}" target="_blank" rel="noopener">
-        <span class="idx"><span>Docs</span><span>mdBook</span></span>
+        <span class="idx"><span>Docs</span><span>External</span></span>
         <h3>Documentation</h3>
         <p>How every machine works, how it is built, and how to help.</p>
         <span class="go">Open the docs {{ partial "icon.html" "ne" }}</span>
@@ -73,8 +74,11 @@
   </div>
 </section>
 
+{{/* ---------------- LOGO, FABRICATED (optional, hugo.toml fabWidget) ---------------- */}}
+{{ if site.Params.fabWidget }}{{ partial "fab-widget.html" . }}{{ end }}
+
 {{/* ---------------- /02 TEAM ---------------- */}}
-<section class="sec theme-dark" id="team" data-nav="dark">
+<section class="sec theme-light" id="team" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow reveal"><span class="idx">02</span> Team</p>
@@ -97,7 +101,7 @@
 {{/* ---------------- /03 BLOG ---------------- */}}
 {{ $posts := where site.RegularPages "Section" "blog" }}
 {{ with $posts }}
-<section class="sec theme-light" id="blog" data-nav="light">
+<section class="sec theme-dark" id="blog" data-nav="dark">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow reveal"><span class="idx">03</span> Blog</p>

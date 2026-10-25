@@ -1,0 +1,100 @@
+/* =====================================================================
+   "Our logo, fabricated" (layouts/partials/fab-widget.html).
+   Plain CSS, outside the Tailwind build, so the widget can be removed
+   by deleting its files or setting fabWidget = false in hugo.toml.
+
+   static/js/fab-widget.js puts .at-1 … .at-N on .fabw for every step
+   reached so far; each layer of the drawing reacts to those classes.
+   Without JavaScript the finished logo is shown.
+   ===================================================================== */
+.fabw { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(40px, 6vw, 112px); align-items: center; }
+.fabw-h { margin-top: 18px; }
+.fabw { margin-top: clamp(32px, 5vh, 56px); }
+
+/* ---- step list ---- */
+.fabw-steps { border-top: 1px solid var(--line); counter-reset: none; }
+.fabw-steps li { border-bottom: 1px solid var(--line); }
+.fabw-step { display: flex; align-items: baseline; gap: 18px; width: 100%; padding: 13px 0; background: none; border: 0; color: var(--muted); font: inherit; text-align: left; cursor: pointer; transition: color .2s; }
+.fabw-step:hover { color: var(--fg); }
+.fabw-step .idx { min-width: 2.4ch; }
+.fabw-name { font-size: clamp(18px, 1.5vw, 22px); letter-spacing: -.01em; }
+.fabw-step[aria-current="step"] { color: var(--fg); }
+.fabw-step[aria-current="step"] .idx { color: var(--accent); }
+/* the open step shows its sentence and machine link; the others fold */
+.fabw-detail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(.2,.7,.2,1), padding .45s; }
+.fabw-detail-in { min-height: 0; overflow: hidden; padding-left: calc(2.4ch + 18px); }
+.fabw-step[aria-current="step"] + .fabw-detail { grid-template-rows: 1fr; padding-bottom: 16px; }
+.fabw-detail p { max-width: 48ch; font-size: 15px; color: var(--muted); }
+.fabw-machine { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 14px; color: var(--fg); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-2); }
+.fabw-machine:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.fabw-machine svg { width: 12px; height: 12px; }
+
+.fabw-play { display: inline-flex; align-items: center; gap: 12px; margin-top: 24px; padding: 0; background: none; border: 0; color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+.fabw-play:hover { color: var(--fg); }
+.fabw-play-i { position: relative; width: 34px; height: 34px; border: 1px solid var(--line-2); }
+.fabw-play-i::before { content: ""; position: absolute; left: 13px; top: 11px; border-left: 9px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+.fabw-play[aria-pressed="true"] .fabw-play-i::before { left: 12px; top: 11px; width: 3px; height: 12px; border: 0; background: currentColor; box-shadow: 6px 0 0 currentColor; }
+
+/* ---- the drawing ---- */
+.fabw-stage { position: relative; margin: 0; }
+.fabw-stage::before { content: ""; position: absolute; inset: 6%; border-radius: 50%; background: radial-gradient(closest-side, rgba(var(--uv-glow), .32), transparent); opacity: 0; transition: opacity 1s; pointer-events: none; }
+.fabw.at-6 .fabw-stage::before { opacity: 1; }
+.fabw-stage svg { position: relative; display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; overflow: visible; }
+.fabw-cap { display: flex; justify-content: center; gap: 14px; margin-top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.fabw-cap [data-fabw-num] { color: var(--accent); }
+
+.fabw svg * { transition: opacity .9s cubic-bezier(.2,.7,.2,1), fill 1s, stroke 1s, transform 1.2s cubic-bezier(.2,.7,.2,1), stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1); }
+.fabw-halo { fill: none; stroke: rgba(244,244,242,.12); stroke-width: 1; stroke-dasharray: 2 6; }
+.fabw-edge { fill: none; stroke: rgba(244,244,242,.35); stroke-width: 1.5; }
+.fabw-notch { fill: var(--bg, #060607); stroke: rgba(244,244,242,.35); stroke-width: 1.5; }
+
+/* 0: bare silicon. 1: oxide film (thin-film interference colours). */
+.fabw-oxide { opacity: 0; }
+.fabw.at-1 .fabw-oxide { opacity: .78; }
+.fabw.at-5 .fabw-oxide { opacity: 0; }
+
+/* 5+: the etched field takes the logo's purple */
+.fabw-deep { fill: #42245f; opacity: 0; }
+.fabw.at-5 .fabw-deep { opacity: 1; }
+
+/* 2: resist spins on from the centre. 5: thinned by the etch. 6: stripped. */
+.fabw-resist { fill: #efe9fb; opacity: .94; transform-box: fill-box; transform-origin: center; transform: scale(0) rotate(-120deg); }
+.fabw.at-2 .fabw-resist { transform: none; }
+.fabw.at-5 .fabw-resist { opacity: .42; }
+.fabw.at-6 .fabw-resist { opacity: 0; transform: scale(1.08); }
+
+/* 3: UV light writes the pattern into the resist */
+.fabw-expose { opacity: 1; }
+.fabw-expose path { fill: none; stroke: #a78bfa; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.fabw.at-3 .fabw-expose path { stroke-dashoffset: 0; }
+.fabw.at-4 .fabw-expose { opacity: 0; }
+.fabw-scan { fill: rgba(167,139,250,.28); opacity: 0; }
+.fabw.at-3:not(.at-4) .fabw-scan { animation: fabw-scan 1.6s cubic-bezier(.4,0,.2,1) both; }
+@keyframes fabw-scan { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(440px); } }
+
+/* 4: developed openings show the oxide underneath */
+.fabw-trench path { fill: none; stroke: #3a2b6b; stroke-width: 7; stroke-linecap: round; }
+.fabw-trench { opacity: 0; }
+.fabw.at-4 .fabw-trench { opacity: 1; }
+.fabw.at-5 .fabw-trench { opacity: 0; }
+
+/* 5-6: the pattern, now in the wafer, the logo's white */
+.fabw-final path { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; }
+.fabw-final .fabw-star { fill: #fff; stroke: none; transform-box: fill-box; transform-origin: center; transform: scale(.4); }
+.fabw-final { opacity: 0; }
+.fabw.at-5 .fabw-final { opacity: 1; }
+.fabw.at-6 .fabw-star { transform: scale(1); }
+.fabw.at-6 .fabw-final { filter: drop-shadow(0 0 6px rgba(167,139,250,.7)); }
+
+@media (max-width: 900px) {
+  .fabw { grid-template-columns: 1fr; gap: 20px; }
+  /* the drawing stays in view while you tap through the steps below it */
+  .fabw-stage { order: -1; position: sticky; top: calc(var(--nav-h) + 8px); z-index: 2; width: 100%; padding-bottom: 12px; background: var(--bg); }
+  .fabw-stage svg { max-width: min(300px, 70vw); }
+  .fabw-cap { margin-top: 10px; }
+  .fabw-step { padding: 10px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fabw svg * { transition: none !important; }
+  .fabw-scan { display: none; }
+}

@@ -22,8 +22,8 @@ marker and one quiet motif of its own (below).
 
 **One motif: the alignment mark.** A lithography alignment cross, the thing
 every mask layer is lined up against. It appears as the eyebrow marker, the
-corner brackets in the home hero (with the lab's coordinates), and a small
-UV cross on the placeholder machine drawings. That's all; don't add more. The site should read
+corner brackets in the home hero, and a small UV cross on the placeholder
+machine drawings. That's all; don't add more. The site should read
 like a serious engineering organization that happens to be students.
 
 **A visitor always knows where they are.** Every page has the persistent top
@@ -218,3 +218,27 @@ nothing autoplays. `prefers-reduced-motion` turns it all off.
 After changing a template or `tailwind-input.css`, run `npm run build:css`
 and commit `static/css/site.css` with your change. A class added only by
 JavaScript must be listed in the `safelist` in `tailwind.config.js`.
+
+## Additions (revision 4)
+
+**Folding bands** (`/machines/`). Each band heading is a `<button>` inside
+the `<h2>` (`aria-expanded`, `aria-controls` the band's card grid), with the
+machine count and a square chevron on the right. Gen One starts open, the
+others closed. A closed band's rule turns to `--line-2`.
+
+**Incubator** (bottom of `/machines/`). Deliberately small: one paper box,
+eyebrow, a 24–34px light heading, two sentences and one small button. It
+is an internal process, not a headline feature.
+
+**Events** (`/events/`). Page hero with specs, then either the calendar
+(`.cal-*`, ported from Stone Arch Silicon, UV in place of gold: today's date
+is a UV square, event chips have a UV left rule) or the `.subscribe`
+two-column block, then the two CTA blocks.
+
+**"Our logo, fabricated"** (homepage, `fab-widget.*`). A dark section: the
+eyebrow and `.h2` across the top, the numbered step list left, the wafer
+drawing right (on phones the drawing sits above the list and stays in view
+while you tap). It is the one place purple is used as a fill: the etched
+wafer becomes the logo's own `#42245f`, and the finished logo glows. It
+lives in its own CSS and JS so it can be removed with `fabWidget = false`.
+

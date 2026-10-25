@@ -22,9 +22,16 @@ empty. How to make each change: [EDITING.md](EDITING.md).
       "Getting the official RSO mark"), add the file, and set the path.
 - [ ] **`googleSiteVerification`**: empty. Optional; only needed for Google
       Search Console.
-- [ ] **Hero coordinates**: the hero shows `44.974° N · 93.232° W` (East Bank,
-      UMN). Swap in the lab's exact location if you like, in
-      `layouts/index.html`.
+- [ ] **`calendarID`**: empty, so /events/ only says the speaker series is
+      coming. Make the club's Google Calendar public and paste its ID
+      (README, "Events and the calendar"). Optional: **`calendarAPIKey`**
+      for the month grid, and **`eventsLocation`** for where you meet.
+- [ ] **`incubatorFormURL`**: empty, so "Propose a project" emails
+      `contactEmail`. Paste the Incubator proposal form's link.
+- [ ] **The logo animation** (homepage, "Our logo, fabricated"): keep it,
+      tweak the step text in `data/fabsteps.yaml`, or turn it off with
+      `fabWidget = false`. Two of its steps (Develop, Strip) don't link to
+      a machine because those machines are still drafts.
 
 ## Machines (`content/machines/`)
 

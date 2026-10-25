@@ -46,6 +46,10 @@ disableKinds = ["taxonomy", "term"]
     pageRef = "/blog"
     weight = 30
   [[menus.main]]
+    name = "Events"
+    pageRef = "/events"
+    weight = 35
+  [[menus.main]]
     name = "Sponsors"
     url = "/#sponsors"
     weight = 40
@@ -68,6 +72,10 @@ disableKinds = ["taxonomy", "term"]
   heroTitle = "Bare wafer to working chip."
   heroLead = "We are engineering undergraduates at the University of Minnesota building a nanofabrication facility from scratch. Every machine is designed, assembled, tested and documented by students."
 
+  # The "Our logo, fabricated" animation on the homepage. false removes
+  # the section (and its CSS and JS). layouts/partials/fab-widget.html.
+  fabWidget = true
+
   googleSiteVerification = ""
 
   # ---------------- Links ----------------
@@ -76,6 +84,24 @@ disableKinds = ["taxonomy", "term"]
   linkedinURL = "https://www.linkedin.com/company/minnesota-nanofabrication-club/"
   instagramURL = "https://www.instagram.com/minnesota_nanofab_club/?hl=en"
   contactEmail = "nanoclub@umn.edu"
+
+  # ---------------- Incubator ----------------
+  # The "Propose a project" button at the bottom of /machines/. Paste the
+  # proposal form's link (Google Form, etc.). Empty = the button emails
+  # contactEmail instead.
+  incubatorFormURL = ""
+
+  # ---------------- Events calendar ----------------
+  # The /events/ page. calendarID is the club's PUBLIC Google Calendar ID
+  # (Google Calendar -> Settings for the calendar -> Integrate calendar ->
+  # Calendar ID; for a umn.edu account calendar it is just the address).
+  # It powers the "Add to Google Calendar" and "iCal" subscribe buttons.
+  # calendarAPIKey is optional: with it, the page also draws the month
+  # grid and the upcoming list. README, "Events and the calendar".
+  calendarID = ""
+  calendarAPIKey = ""
+  # Shown in the events page header. Leave "" to hide.
+  eventsLocation = ""
 
   # ---------------- The documentation site ----------------
   # The separate mdBook site (repository: nanofab_docs). The "Docs"

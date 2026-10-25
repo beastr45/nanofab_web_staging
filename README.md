@@ -28,6 +28,7 @@ touch HTML or CSS for any routine update.
 2. [Where everything lives](#2-where-everything-lives)
 3. [Add or edit a machine](#3-add-or-edit-a-machine)
 4. [Post to the blog](#4-post-to-the-blog)
+   - [Events and the calendar](#4a-events-and-the-calendar)
 5. [People, advisors and sponsors](#5-people-advisors-and-sponsors)
 6. [Site settings: links, navigation, docs URL](#6-site-settings-links-navigation-docs-url)
 7. [Changing the design](#7-changing-the-design)
@@ -172,13 +173,25 @@ band, machines are ordered by process group (in the order listed in
 `bands.yaml`), then by `weight`. The counts in the page header and on the
 homepage are computed, so they are always right.
 
+Each band folds: its heading is a button. **Gen One starts open and the
+others closed** (the band with `index: 1` in `bands.yaml`); jumping to a band
+from the bar under the hero, or following a link to a card, opens it.
+
 A band marked `fab: false` (Operations & Logistics) has no machines; it is
 only used to group people on /team/.
 
 ### Deep links
 
 Every card has an address: **/machines/#tube-furnace** opens the gallery
-with that card already open. Use these links in Discord or the blog.
+with that card (and its band) already open. Use these links in Discord or
+the blog.
+
+### The Incubator
+
+The small box at the bottom of /machines/ invites members to pitch a new
+project. Its "Propose a project" button opens the form at
+`incubatorFormURL` in `hugo.toml`; with that empty, it emails
+`contactEmail`. The wording is in `layouts/machines/list.html`.
 
 ---
 
@@ -261,6 +274,33 @@ a model, then delete it.
 
 ---
 
+## 4a. Events and the calendar
+
+**/events/** is driven by the club's **public Google Calendar**. Nobody
+edits events on the website: add a speaker event to the Google Calendar and
+it appears on the site and in every subscriber's calendar.
+
+Set it up once, in `hugo.toml`:
+
+1. **`calendarID`**: the calendar's ID (Google Calendar → the calendar's
+   settings → *Integrate calendar* → *Calendar ID*; for a calendar that
+   belongs to a umn.edu account it is just the email address). The calendar
+   must be **public** (*Access permissions* → *Make available to public*,
+   *See all event details*). This alone turns on the **Add to Google
+   Calendar** and **iCal** subscribe buttons.
+2. **`calendarAPIKey`** (optional): with a Google Calendar API key, the
+   page also draws a month grid and an "Upcoming" list, like the Stone Arch
+   Silicon site. How to make and restrict the key is at the top of
+   `static/js/calendar.js`. The key is visible in the page source; that is
+   normal for this setup.
+3. **`eventsLocation`** (optional): where meetings happen, e.g.
+   "Keller Hall 3-111". Shown in the page header.
+
+With neither set, the page says the speaker series is starting soon and
+points to the Discord.
+
+---
+
 ## 5. People, advisors and sponsors
 
 All in `data/`. Each file starts with a comment that explains its fields.
@@ -315,6 +355,20 @@ Everything is in `hugo.toml`, with comments:
 ---
 
 ## 7. Changing the design
+
+### The "Our logo, fabricated" animation
+
+The homepage section where the club logo is built on a wafer step by step
+(oxidize, coat, expose, develop, etch, strip). It is self-contained:
+`layouts/partials/fab-widget.html` (the drawing), `static/css/fab-widget.css`,
+`static/js/fab-widget.js`, and `data/fabsteps.yaml` (step names, the
+one-sentence explanations, and which machine card each step links to).
+
+**To remove it:** set `fabWidget = false` in `hugo.toml`. Nothing else
+loads its CSS or JavaScript. To delete it for good, also delete those four
+files.
+
+### The stylesheet
 
 Read **`.claude/design-language.md`** first. It is the style guide: colours,
 type scale, spacing, components, and when purple is allowed.

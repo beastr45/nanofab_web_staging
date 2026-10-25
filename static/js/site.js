@@ -98,6 +98,30 @@
     
   }
 
+  /* ---------- bands on /machines/ fold ----------
+     The band heading is a button. The band marked data-start-open
+     starts open, the rest closed; a link to a band or to a card inside
+     it opens that band. */
+  var bandBtns = $$('[data-band-toggle]');
+  function setBand(btn, open) {
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (panel) panel.hidden = !open;
+    btn.closest('.band').classList.toggle('is-closed', !open);
+  }
+  function openBandOf(el) {
+    var band = el && el.closest('.band');
+    var btn = band && $('[data-band-toggle]', band);
+    if (btn && btn.getAttribute('aria-expanded') !== 'true') setBand(btn, true);
+  }
+  bandBtns.forEach(function (btn) {
+    setBand(btn, btn.hasAttribute('data-start-open'));
+    btn.addEventListener('click', function () { setBand(btn, btn.getAttribute('aria-expanded') !== 'true'); });
+  });
+  $$('.subnav a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function () { openBandOf(document.getElementById(a.getAttribute('href').slice(1))); });
+  });
+
   /* ---------- machine cards: open in place ---------- */
   var cards = $$('[data-card]');
   function setCard(card, open, focus) {
@@ -125,7 +149,8 @@
   function openFromHash(smooth) {
     var id = decodeURIComponent(location.hash.slice(1));
     var card = id && document.getElementById(id);
-    if (card && card.hasAttribute('data-card')) setCard(card, true, smooth !== false);
+    if (card && card.classList.contains('band')) openBandOf($('[data-band-toggle]', card));
+    if (card && card.hasAttribute('data-card')) { openBandOf(card); setCard(card, true, smooth !== false); }
   }
   if (cards.length) {
     openFromHash();
@@ -134,6 +159,7 @@
     if (all) all.addEventListener('click', function () {
       var open = all.getAttribute('aria-pressed') !== 'true';
       cards.forEach(function (c) { setCard(c, open); });
+      if (open) bandBtns.forEach(function (b) { setBand(b, true); });
       all.setAttribute('aria-pressed', open ? 'true' : 'false');
       all.textContent = open ? 'Close all' : 'Open all';
     });

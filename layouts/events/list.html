@@ -1,0 +1,90 @@
+{{ define "main" }}
+{{/* ==============================================================
+     /events/: THE CALENDAR. Events come from the club's public Google
+     Calendar (hugo.toml calendarID). Nobody edits events here: add them
+     to the Google Calendar and they appear.
+       calendarID only        subscribe buttons
+       + calendarAPIKey       also the month grid and the upcoming list
+                              (static/js/calendar.js)
+       neither                a short "coming soon" note
+     ============================================================== */}}
+{{ $id := site.Params.calendarID }}
+{{ $key := site.Params.calendarAPIKey }}
+{{ $google := printf "https://calendar.google.com/calendar/u/0/r?cid=%s" ($id | urlquery) }}
+{{ $ical := printf "https://calendar.google.com/calendar/ical/%s/public/basic.ics" ($id | urlquery) }}
+
+{{ $specs := slice }}
+{{ with site.Params.eventsLocation }}{{ $specs = $specs | append (dict "b" . "span" "Where we meet") }}{{ end }}
+{{ $specs = $specs | append (dict "b" "Speaker series" "span" "Industry and research talks") }}
+{{ if $id }}{{ $specs = $specs | append (dict "b" "Subscribe ↗" "span" "Add it to Google Calendar" "href" $google) }}{{ end }}
+
+{{ partial "page-hero.html" (dict "page" . "title" "What's coming up." "lead" .Params.lead "specs" $specs) }}
+
+<section class="sec theme-light" id="calendar" data-nav="light">
+  <div class="wrap">
+    {{ if and $id $key }}
+    <div class="cal-wrap reveal">
+      <div class="cal-bar">
+        <div class="cal-nav">
+          <button class="cal-arrow" id="calPrev" type="button" aria-label="Previous month">‹</button>
+          <h2 class="cal-month" id="calMonth" aria-live="polite"></h2>
+          <button class="cal-arrow" id="calNext" type="button" aria-label="Next month">›</button>
+          <button class="cal-today" id="calToday" type="button">Today</button>
+        </div>
+        <div class="cal-actions">
+          <a class="btn btn-solid btn-sm" href="{{ $google }}" target="_blank" rel="noopener">Add to Google Calendar {{ partial "icon.html" "ne" }}</a>
+          <a class="btn btn-line btn-sm" href="{{ $ical }}">iCal</a>
+        </div>
+      </div>
+      <div class="cal-body">
+        <div class="cal-grid-wrap">
+          <div class="cal-dow" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+          <div class="cal-grid" id="calGrid" data-cal-id="{{ $id }}" data-cal-key="{{ $key }}"></div>
+        </div>
+        <aside class="cal-side">
+          <div class="cal-side-top">
+            <h3 class="cal-side-head" id="calSideHead">Upcoming</h3>
+            <button class="cal-reset" id="calReset" type="button" hidden>Show upcoming</button>
+          </div>
+          <ol class="cal-list" id="calList"></ol>
+        </aside>
+      </div>
+      <div class="cal-status" id="calStatus" aria-live="polite"></div>
+    </div>
+    {{ else if $id }}
+    <div class="subscribe reveal">
+      <div>
+        <p class="eyebrow">Calendar</p>
+        <h2 class="h2 mt-4">Never miss a talk.</h2>
+      </div>
+      <div>
+        <p class="lead">Subscribe once. Every speaker event, workshop and meeting lands in your calendar, and updates when plans change.</p>
+        <div class="hero-cta mt-8">
+          <a class="btn btn-solid" href="{{ $google }}" target="_blank" rel="noopener">Add to Google Calendar {{ partial "icon.html" "ne" }}</a>
+          <a class="btn btn-line" href="{{ $ical }}">Apple, Outlook (iCal) {{ partial "icon.html" "arrow" }}</a>
+        </div>
+      </div>
+    </div>
+    {{ else }}
+    <div class="subscribe reveal">
+      <div>
+        <p class="eyebrow">Calendar</p>
+        <h2 class="h2 mt-4">The speaker series starts soon.</h2>
+      </div>
+      <div>
+        <p class="lead">The first talks are being scheduled now. Join the Discord to hear about them first.</p>
+        <div class="hero-cta mt-8">
+          {{ with site.Params.discordURL }}<a class="btn btn-solid" href="{{ . }}" target="_blank" rel="noopener">Join on Discord {{ partial "icon.html" "ne" }}</a>{{ end }}
+        </div>
+      </div>
+    </div>
+    {{ end }}
+
+    <div class="ctas">
+      {{ with site.Params.discordURL }}<a class="cta-block cta-dark reveal" href="{{ . }}" target="_blank" rel="noopener">Join the club {{ partial "icon.html" "big-arrow" }}</a>{{ end }}
+      {{ with site.Params.contactEmail }}<a class="cta-block cta-grey reveal" href="mailto:{{ . }}?subject=Speaking%20at%20Minnesota%20Nanofabrication">Give a talk {{ partial "icon.html" "big-arrow" }}</a>{{ end }}
+    </div>
+  </div>
+</section>
+{{ if and $id $key }}<script src="{{ "js/calendar.js" | relURL }}" defer></script>{{ end }}
+{{ end }}

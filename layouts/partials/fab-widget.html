@@ -1,0 +1,102 @@
+{{/* ==============================================================
+     "LOGO, FABRICATED": the homepage widget. The club logo is built on
+     a wafer one process step at a time: oxidize, coat, expose, develop,
+     etch, strip. It plays when scrolled into view; the step list on
+     the left jumps to any step and links to the machine that does it.
+
+     Self-contained, so it is easy to remove:
+       layouts/partials/fab-widget.html   (this file)
+       static/css/fab-widget.css           its styles
+       static/js/fab-widget.js             its behaviour
+       data/fabsteps.yaml                  the step names and text
+     Turn it off with  fabWidget = false  in hugo.toml.
+     ============================================================== */}}
+{{ $steps := hugo.Data.fabsteps }}
+{{ $n := len $steps }}
+<section class="sec theme-dark fabw-sec" id="process" data-nav="dark">
+  <div class="wrap">
+    <p class="eyebrow reveal">How a chip is made</p>
+    <h2 class="h2 reveal fabw-h">Our logo, fabricated.</h2>
+    <div class="fabw" data-fabw data-step="{{ sub $n 1 }}">
+      <div class="fabw-copy">
+        <ol class="fabw-steps" aria-label="Process steps">
+          {{ range $i, $s := $steps }}
+          {{ $m := "" }}{{ with $s.machine }}{{ $m = site.GetPage (printf "/machines/%s" .) }}{{ end }}
+          <li>
+            <button type="button" class="fabw-step" data-go="{{ $i }}" data-label="{{ $s.label }}" aria-current="{{ if eq $i (sub $n 1) }}step{{ else }}false{{ end }}">
+              <span class="idx">{{ printf "%02d" $i }}</span>
+              <span class="fabw-name">{{ $s.name }}</span>
+            </button>
+            <div class="fabw-detail"><div class="fabw-detail-in">
+              <p>{{ $s.text }}</p>
+              {{ with $m }}<a class="fabw-machine" href="{{ "machines/" | relURL }}#{{ .File.ContentBaseName }}">{{ .Title }} {{ partial "icon.html" "arrow" }}</a>{{ end }}
+            </div></div>
+          </li>
+          {{ end }}
+        </ol>
+        <button type="button" class="fabw-play" data-fabw-play aria-pressed="false"><span class="fabw-play-i" aria-hidden="true"></span><span data-fabw-play-label>Play</span></button>
+      </div>
+
+      <figure class="fabw-stage">
+        <svg viewBox="0 0 400 400" role="img" aria-labelledby="fabw-title">
+          <title id="fabw-title">The club logo, built on a silicon wafer step by step</title>
+          <defs>
+            <clipPath id="fabw-clip"><circle cx="200" cy="200" r="170"/></clipPath>
+            <radialGradient id="fabw-si" cx="38%" cy="32%" r="80%">
+              <stop offset="0" stop-color="#e4e5e8"/><stop offset=".6" stop-color="#b7b9be"/><stop offset="1" stop-color="#8e9096"/>
+            </radialGradient>
+            <linearGradient id="fabw-film" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#6d4fc2"/><stop offset=".45" stop-color="#3d7f9e"/><stop offset=".75" stop-color="#8a5fd0"/><stop offset="1" stop-color="#5a3a9e"/>
+            </linearGradient>
+            <filter id="fabw-glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <circle class="fabw-halo" cx="200" cy="200" r="182"/>
+          <g clip-path="url(#fabw-clip)">
+            <circle class="fabw-base" cx="200" cy="200" r="170" fill="url(#fabw-si)"/>
+            <circle class="fabw-deep" cx="200" cy="200" r="170"/>
+            <circle class="fabw-oxide" cx="200" cy="200" r="170" fill="url(#fabw-film)"/>
+            <g class="fabw-final">
+<path d="M158 72C198.5 129.6 198.5 270.4 158 328C117.5 270.4 117.5 129.6 158 72Z"/>
+<path d="M214 84C249.1 136.2 249.1 263.8 214 316C178.9 263.8 178.9 136.2 214 84Z"/>
+<path d="M36.3 330.0L366.0 162.1"/>
+<path d="M19.4 288.0L373.2 179.8"/>
+<path d="M11.2 252.7L376.6 194.8"/>
+<path d="M8.2 221.1L377.9 208.2"/>
+<path d="M9.4 184.8L377.4 223.5"/>
+<path d="M16.9 144.7L374.3 240.5"/>
+<path d="M32.4 102.1L367.7 258.5"/>
+              <path class="fabw-star" d="M268 186L273 207L294 212L273 217L268 238L263 217L242 212L263 207Z"/>
+            </g>
+            <circle class="fabw-resist" cx="200" cy="200" r="170"/>
+            <g class="fabw-trench">
+<path d="M158 72C198.5 129.6 198.5 270.4 158 328C117.5 270.4 117.5 129.6 158 72Z"/>
+<path d="M214 84C249.1 136.2 249.1 263.8 214 316C178.9 263.8 178.9 136.2 214 84Z"/>
+<path d="M36.3 330.0L366.0 162.1"/>
+<path d="M19.4 288.0L373.2 179.8"/>
+<path d="M11.2 252.7L376.6 194.8"/>
+<path d="M8.2 221.1L377.9 208.2"/>
+<path d="M9.4 184.8L377.4 223.5"/>
+<path d="M16.9 144.7L374.3 240.5"/>
+<path d="M32.4 102.1L367.7 258.5"/>
+            </g>
+            <g class="fabw-expose" filter="url(#fabw-glow)">
+<path pathLength="1" d="M158 72C198.5 129.6 198.5 270.4 158 328C117.5 270.4 117.5 129.6 158 72Z"/>
+<path pathLength="1" d="M214 84C249.1 136.2 249.1 263.8 214 316C178.9 263.8 178.9 136.2 214 84Z"/>
+<path pathLength="1" d="M36.3 330.0L366.0 162.1"/>
+<path pathLength="1" d="M19.4 288.0L373.2 179.8"/>
+<path pathLength="1" d="M11.2 252.7L376.6 194.8"/>
+<path pathLength="1" d="M8.2 221.1L377.9 208.2"/>
+<path pathLength="1" d="M9.4 184.8L377.4 223.5"/>
+<path pathLength="1" d="M16.9 144.7L374.3 240.5"/>
+<path pathLength="1" d="M32.4 102.1L367.7 258.5"/>
+            </g>
+            <rect class="fabw-scan" x="-40" y="0" width="40" height="400"/>
+          </g>
+          <circle class="fabw-edge" cx="200" cy="200" r="170"/>
+          <path class="fabw-notch" d="M192 370a8 8 0 0 1 16 0"/>
+        </svg>
+        <figcaption class="fabw-cap" aria-live="polite"><span data-fabw-num></span><span data-fabw-label>{{ (index $steps (sub $n 1)).label }}</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

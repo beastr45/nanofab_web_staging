@@ -4,7 +4,11 @@
      (data/bands.yaml) and process group, in `weight` order. Subsystems
      (`partOf:`) sit right after the machine they belong to.
      A sticky bar under the hero jumps between bands and highlights the
-     one you are reading.
+     one you are reading. Each band folds: its heading is a button that
+     shows or hides its cards (site.js). Gen One starts open, the others
+     closed; jumping to a band or a card opens it. Without JavaScript
+     every band is open.
+     At the bottom: the Incubator, for projects not yet on the line.
      ============================================================== */}}
 {{ $machines := .RegularPages }}
 {{ $bands := sort (where hugo.Data.bands "fab" true) "index" }}
@@ -18,7 +22,7 @@
 {{ end }}
 {{ $specs = $specs | append (dict "b" (printf "%d in build" (len (where $machines "Params.status" "building"))) "span" (printf "of %d total" (len $machines))) }}
 
-{{ partial "page-hero.html" (dict "page" . "eyebrow" "Machines" "title" "Every machine, one page." "lead" .Params.lead "specs" $specs) }}
+{{ partial "page-hero.html" (dict "page" . "eyebrow" "Machines" "title" "The machines." "lead" .Params.lead "specs" $specs) }}
 
 <nav class="subnav" aria-label="Bands">
   <div class="wrap subnav-inner">
@@ -39,16 +43,19 @@
     {{ with $inBand }}
     <section class="band" id="{{ $band.slug }}" aria-labelledby="{{ $band.slug }}-h">
       <div class="band-head">
-        <div>
-          <h2 id="{{ $band.slug }}-h">{{ $band.name }}</h2>
-          {{ with $band.tagline }}<p class="mt-3">{{ . }}</p>{{ end }}
-        </div>
-        <p class="band-count">{{ len $inBand }} machines</p>
+        <h2 id="{{ $band.slug }}-h">
+          <button class="band-toggle" type="button" aria-expanded="true" aria-controls="{{ $band.slug }}-cards" data-band-toggle{{ if eq $band.index 1 }} data-start-open{{ end }}>
+            <span class="band-name">{{ $band.name }}</span>
+            <span class="band-count">{{ len $inBand }} machines</span>
+            <span class="band-chev" aria-hidden="true"></span>
+          </button>
+        </h2>
+        {{ with $band.tagline }}<p>{{ . }}</p>{{ end }}
       </div>
       {{/* One grid per band, so a group with a single machine does not
            leave a hole. The group name rides on each card instead. */}}
       {{ $groups := $band.groups | default (slice (dict "slug" "" "name" "")) }}
-      <div class="cards">
+      <div class="cards" id="{{ $band.slug }}-cards">
       {{ range $groups }}
         {{ $g := . }}
         {{ range $inBand.ByWeight }}
@@ -66,14 +73,23 @@
     {{ end }}
     {{ end }}
 
-    <div class="sec-foot" style="margin-top:clamp(64px,10vh,120px)">
-      <p class="eyebrow">Working on a machine?</p>
-      <p class="lead mt-4" style="color:var(--fg)">Each card is one Markdown file in <code class="mono">content/machines/</code>. Edit it on GitHub and the card updates. The long-form build documentation lives on the docs site.</p>
-      <div class="hero-cta mt-8">
-        <a class="btn btn-solid" href="{{ site.Params.docsURL }}contributing.html" target="_blank" rel="noopener">How to contribute {{ partial "icon.html" "ne" }}</a>
-        <a class="btn btn-line" href="{{ site.Params.githubURL }}" target="_blank" rel="noopener">GitHub {{ partial "icon.html" "ne" }}</a>
+    {{/* ---------- THE INCUBATOR ----------
+         Small on purpose: it's how the club decides which new projects
+         get fab time and money. Form link: hugo.toml incubatorFormURL. */}}
+    <aside class="incubator" id="incubator" aria-labelledby="incubator-h">
+      <div>
+        <p class="eyebrow">Incubator</p>
+        <h2 class="incubator-title" id="incubator-h">Have an idea for the fab?</h2>
       </div>
-    </div>
+      <div>
+        <p>Part of each year's budget and lab time is held back for new projects. Pitch a tool, a process or an experiment; the officers review proposals and the strongest ones join the line.</p>
+        {{ with site.Params.incubatorFormURL }}
+        <a class="btn btn-solid btn-sm mt-6" href="{{ . }}" target="_blank" rel="noopener">Propose a project {{ partial "icon.html" "ne" }}</a>
+        {{ else }}
+        {{ with site.Params.contactEmail }}<a class="btn btn-solid btn-sm mt-6" href="mailto:{{ . }}?subject=Incubator%20proposal">Propose a project {{ partial "icon.html" "arrow" }}</a>{{ end }}
+        {{ end }}
+      </div>
+    </aside>
   </div>
 </section>
 {{ end }}
