@@ -72,10 +72,6 @@ disableKinds = ["taxonomy", "term"]
   heroTitle = "Bare wafer to working chip."
   heroLead = "We are engineering undergraduates at the University of Minnesota building a nanofabrication facility from scratch. Every machine is designed, assembled, tested and documented by students."
 
-  # The "Our logo, fabricated" animation on the homepage. false removes
-  # the section (and its CSS and JS). layouts/partials/fab-widget.html.
-  fabWidget = true
-
   googleSiteVerification = ""
 
   # ---------------- Links ----------------

@@ -356,18 +356,6 @@ Everything is in `hugo.toml`, with comments:
 
 ## 7. Changing the design
 
-### The "Our logo, fabricated" animation
-
-The homepage section where the club logo is built on a wafer step by step
-(oxidize, coat, expose, develop, etch, strip). It is self-contained:
-`layouts/partials/fab-widget.html` (the drawing), `static/css/fab-widget.css`,
-`static/js/fab-widget.js`, and `data/fabsteps.yaml` (step names, the
-one-sentence explanations, and which machine card each step links to).
-
-**To remove it:** set `fabWidget = false` in `hugo.toml`. Nothing else
-loads its CSS or JavaScript. To delete it for good, also delete those four
-files.
-
 ### The stylesheet
 
 Read **`.claude/design-language.md`** first. It is the style guide: colours,

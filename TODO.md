@@ -28,10 +28,6 @@ empty. How to make each change: [EDITING.md](EDITING.md).
       for the month grid, and **`eventsLocation`** for where you meet.
 - [ ] **`incubatorFormURL`**: empty, so "Propose a project" emails
       `contactEmail`. Paste the Incubator proposal form's link.
-- [ ] **The logo animation** (homepage, "Our logo, fabricated"): keep it,
-      tweak the step text in `data/fabsteps.yaml`, or turn it off with
-      `fabWidget = false`. Two of its steps (Develop, Strip) don't link to
-      a machine because those machines are still drafts.
 
 ## Machines (`content/machines/`)
 

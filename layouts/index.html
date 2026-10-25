@@ -3,7 +3,6 @@
      THE HOMEPAGE
        hero      the lab, the goal, two ways in, live counts
        01 About  what the club is, and one tile per band of the fab
-       process   "Our logo, fabricated" (fab-widget.html; hugo.toml fabWidget)
        02 Team   the officers (full roster on /team/)
        03 Blog   latest posts (only once a post is published)
        04 Sponsors
@@ -74,11 +73,8 @@
   </div>
 </section>
 
-{{/* ---------------- LOGO, FABRICATED (optional, hugo.toml fabWidget) ---------------- */}}
-{{ if site.Params.fabWidget }}{{ partial "fab-widget.html" . }}{{ end }}
-
 {{/* ---------------- /02 TEAM ---------------- */}}
-<section class="sec theme-light" id="team" data-nav="light">
+<section class="sec theme-dark" id="team" data-nav="dark">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow reveal"><span class="idx">02</span> Team</p>
@@ -101,7 +97,7 @@
 {{/* ---------------- /03 BLOG ---------------- */}}
 {{ $posts := where site.RegularPages "Section" "blog" }}
 {{ with $posts }}
-<section class="sec theme-dark" id="blog" data-nav="dark">
+<section class="sec theme-light" id="blog" data-nav="light">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow reveal"><span class="idx">03</span> Blog</p>

@@ -234,11 +234,3 @@ is an internal process, not a headline feature.
 (`.cal-*`, ported from Stone Arch Silicon, UV in place of gold: today's date
 is a UV square, event chips have a UV left rule) or the `.subscribe`
 two-column block, then the two CTA blocks.
-
-**"Our logo, fabricated"** (homepage, `fab-widget.*`). A dark section: the
-eyebrow and `.h2` across the top, the numbered step list left, the wafer
-drawing right (on phones the drawing sits above the list and stays in view
-while you tap). It is the one place purple is used as a fill: the etched
-wafer becomes the logo's own `#42245f`, and the finished logo glows. It
-lives in its own CSS and JS so it can be removed with `fabWidget = false`.
-

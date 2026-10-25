@@ -229,7 +229,6 @@ Open `hugo.toml`:
 - `docsURL`: where the documentation site lives.
 - `incubatorFormURL`: the "Propose a project" form at the bottom of /machines/.
 - `calendarID`, `calendarAPIKey`, `eventsLocation`: the /events/ page.
-- `fabWidget`: `false` hides the "Our logo, fabricated" animation.
 - `[[menus.main]]` blocks: the links in the top bar.
 
 ---
