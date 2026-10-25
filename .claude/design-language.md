@@ -80,7 +80,7 @@ Purple is a signal, so it has to stay rare. Allowed:
 - Bullet dots in long-form prose, the left rule on blockquotes and draft
   warnings in the docs.
 
-Not allowed (except the footer flood, see "The circuitry"): purple backgrounds on resting elements, purple body text,
+Not allowed: purple backgrounds on resting elements, purple body text,
 purple headings, gradients other than the glow, more than one purple
 element competing in a single viewport at rest.
 
@@ -122,14 +122,13 @@ Headings don't end in full stops, **except** the big display statements
   only. Buttons, badges, chips and portraits are square. The only round
   things are small dots (status, bullets, the active-link dot, the
   headline's full stop), which read as vias.
-- **The circuitry** (`static/js/circuit.js`). Traces, vias, bond pads, dies
-  and alignment marks drawn into one SVG behind the content. Near the top
-  they stay in the side margins; down the page they get denser and reach
-  further in (anything inside the content column is drawn at half
-  strength). Each piece draws itself as it scrolls into view. Over the
-  last stretch before the footer the page floods with UV, and the footer
-  is solid UV (`.theme-uv`, `--fab`) with faint white circuitry. This is
-  the one sanctioned exception to "no purple backgrounds".
+- **The circuitry** (`static/js/circuit.js`). Faint UV traces ending in
+  vias, drawn into one SVG behind the content, stopping at the footer.
+  Traces and vias only: no chips, pads or marks. Near the top they stay in
+  the side margins; down the page there are a few more and they reach a
+  little further in (inside the content column, half strength). Each
+  trace draws itself as it scrolls into view. Keep it quiet: if it is
+  the first thing you notice on a page, it is too strong.
 - Hairlines (`--line`, `--line-2`) are card borders and dividers. Shadows
   only on things that float: the header and tab bar on light sections, and
   a hovered machine card.

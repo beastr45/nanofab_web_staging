@@ -377,8 +377,7 @@ that only JavaScript adds must be listed in `safelist` in
 
 ### The circuitry
 
-The traces and chip parts along the sides of every page, and the fade to
-purple above the footer, are drawn by `static/js/circuit.js` (comments at
+The faint traces and vias along the sides of every page are drawn by `static/js/circuit.js` (comments at
 the top explain it). Colours and strength are the `.c-*` rules in
 `tailwind-input.css`. To turn it off, delete the `circuit.js` line in
 `layouts/_default/baseof.html`.
