@@ -215,6 +215,7 @@
   .band-toggle[aria-expanded="false"] .band-chev::before { transform: translate(-70%, -50%) rotate(-45deg); }
   .band-toggle:hover .band-chev { border-color: var(--fg); }
   .band.is-closed .band-head { border-bottom-color: var(--line-2); }
+  .cards[hidden] { display: none; }
 
   /* ---------- incubator (bottom of /machines/) ---------- */
   .incubator { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px var(--gut); margin-top: clamp(72px, 11vh, 128px); padding: clamp(24px, 3vw, 40px); border: 1px solid var(--line-2); background: var(--paper); }

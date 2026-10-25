@@ -85,6 +85,6 @@
 {{/* ---------- The stylesheet. Built from tailwind-input.css (npm run build:css). ---------- */}}
 {{ $css := "css/site.css" }}
 <link rel="stylesheet" href="{{ $css | relURL }}?v={{ substr (readFile (printf "static/%s" $css) | md5) 0 10 }}" />
-{{ if and .IsHome site.Params.fabWidget }}<link rel="stylesheet" href="{{ "css/fab-widget.css" | relURL }}" />
-<script src="{{ "js/fab-widget.js" | relURL }}" defer></script>{{ end }}
+{{ if and .IsHome site.Params.fabWidget }}<link rel="stylesheet" href="{{ "css/fab-widget.css" | relURL }}?v={{ substr (readFile "static/css/fab-widget.css" | md5) 0 10 }}" />
+<script src="{{ "js/fab-widget.js" | relURL }}?v={{ substr (readFile "static/js/fab-widget.js" | md5) 0 10 }}" defer></script>{{ end }}
 <script>document.documentElement.classList.add('js');</script>

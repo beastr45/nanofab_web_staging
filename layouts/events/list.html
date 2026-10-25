@@ -86,5 +86,5 @@
     </div>
   </div>
 </section>
-{{ if and $id $key }}<script src="{{ "js/calendar.js" | relURL }}" defer></script>{{ end }}
+{{ if and $id $key }}<script src="{{ "js/calendar.js" | relURL }}?v={{ substr (readFile "static/js/calendar.js" | md5) 0 10 }}" defer></script>{{ end }}
 {{ end }}
