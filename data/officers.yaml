@@ -45,7 +45,9 @@
   photo: "images/officers/Andrew.jpeg"
 
 - name: Bear BlinSchauer
-  role: Secretary-Treasurer
+  role:
+    - Secretary-Treasurer
+    - Logistics Lead
   major: 
   email: ""
   photo: "images/officers/bear.jpeg"
