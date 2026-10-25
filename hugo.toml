@@ -85,7 +85,7 @@ disableKinds = ["taxonomy", "term"]
   # The "Propose a project" button at the bottom of /machines/. Paste the
   # proposal form's link (Google Form, etc.). Empty = the button emails
   # contactEmail instead.
-  incubatorFormURL = ""
+  incubatorFormURL = "https://docs.google.com/forms/d/e/1FAIpQLSc5nth3iapB76D00UKA63-9QRU7BNukXxdADJaXm54cQxhP3g/viewform"
 
   # ---------------- Events calendar ----------------
   # The /events/ page. calendarID is the club's PUBLIC Google Calendar ID

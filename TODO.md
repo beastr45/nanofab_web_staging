@@ -25,8 +25,8 @@ empty. How to make each change: [EDITING.md](EDITING.md).
       coming. Make the club's Google Calendar public and paste its ID
       (README, "Events and the calendar"). Optional: **`calendarAPIKey`**
       for the month grid, and **`eventsLocation`** for where you meet.
-- [ ] **`incubatorFormURL`**: empty, so "Propose a project" emails
-      `contactEmail`. Paste the Incubator proposal form's link.
+- [x] **`incubatorFormURL`**: set to the Incubator interest form, behind
+      "Propose a project" at the bottom of /machines/.
 
 ## Machines (`content/machines/`)
 
